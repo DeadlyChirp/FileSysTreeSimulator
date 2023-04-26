@@ -33,3 +33,41 @@ void executer_commandes(const char *chemin_fichier);
 void supprimer_noeud(noeud* n);
 
 #endif //PROJECT_CCC_STRUCT_H
+
+
+// #include <stdbool.h>
+// #ifndef CORE_STRUCT_H_
+// #define CORE_STRUCT_H_
+
+// struct Node {
+//     bool isFolder;
+//     char name[100];
+//     struct Node* parent;
+//     struct Node* root;
+//     struct ListNode* child;
+// };
+
+// struct ListNode {
+//     struct Node* no;
+//     struct ListNode* succ;
+// };
+
+// typedef struct Node Node;
+// typedef struct ListNode ListNode;
+
+// Node* CreateNode(bool is_folder, char* name, Node* parent);
+// void DeleteNode(Node* root, char* path);
+// void CopyNode(Node* root, char* src_path, char* dst_path);
+// void MoveNode(Node* root, char* src_path, char* dst_path);
+// Node* FindNode(Node* root, char* path);
+// void AddChild(Node* parent, Node* child);
+// void DeleteChild(Node* parent, Node* child);
+// void CreateFile(Node* root, char* path);
+// void ProcessFile(Node* root, char* filename);
+// void CreateFolder(Node* root, char* path);
+// void ChangeDirectory(Node** current_Node, char* path);
+// void ProcessInstruction(Node** current_Node, char* instruction);
+// void PrintCurrentDirectory(Node* current_Node, int level);
+// void PrintDirectory(Node* root, int level);
+
+// #endif // CORE_STRUCT_H
