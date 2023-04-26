@@ -9,6 +9,6 @@
 // ...
 // (Paste all the functions from src/struct.c)
 int main() {
-    executer_commandes("commands.txt");
+    executer_commandes("commandfile.txt");
     return 0;
 }
