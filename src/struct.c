@@ -39,7 +39,16 @@ void ajouter_fils(noeud *parent, noeud *fils) {
         courant->succ = ln;
     }
 }
-
+void supprimer_noeud(noeud *n) {
+    liste_noeud *courant = n->fils;
+    while (courant) {
+        liste_noeud *temp = courant->succ;
+        supprimer_noeud(courant->no);
+        free(courant);
+        courant = temp;
+    }
+    free(n);
+}
 
 void afficher_arborescence(noeud *racine, int profondeur) {
     for (int i = 0; i < profondeur; ++i) {
@@ -95,6 +104,9 @@ noeud *trouver_noeud(noeud *racine, const char *chemin) {
     return noeud_courant;
 }
 
+
+
+
 void executer_commandes(const char *chemin_fichier) {
     FILE *fichier = fopen(chemin_fichier, "r");
     if (!fichier) {
@@ -123,24 +135,29 @@ void executer_commandes(const char *chemin_fichier) {
                 if (n && n->est_dossier) {
                     noeud_courant = n;
                 }
-            } else if (strcmp(commande, "cp") == 0 && result == 3) {
-                noeud *src = trouver_noeud(noeud_courant->racine, argument1);
-                noeud *dst = trouver_noeud(noeud_courant->racine, argument2);
-                if (src && dst && dst->est_dossier) {
-                    creer_noeud(src->est_dossier, src->nom, dst);
-                }
-
-            } else if (strcmp(commande, "mv") == 0 && result == 3) {
-                noeud *src = trouver_noeud(noeud_courant->racine, argument1);
-                noeud *dst = trouver_noeud(noeud_courant->racine, argument2);
-                if (src && dst && dst->est_dossier) {
-                    src->pere = dst;
-                }
             }
-            printf("\nArborescence après l'exécution de la commande '%s':\n", ligne);
-            afficher_arborescence(racine, 0);
+        } else if (strcmp(commande, "cp") == 0 && result == 3) {
+            noeud *src = trouver_noeud(racine, argument1);
+            noeud *dst = trouver_noeud(racine, argument2);
+            if (src && dst && dst->est_dossier) {
+                creer_noeud(src->est_dossier, src->nom, dst);
+            }
+        } else if (strcmp(commande, "mv") == 0 && result == 3) {
+            noeud *src = trouver_noeud(racine, argument1);
+            noeud *dst = trouver_noeud(racine, argument2);
+            if (src && dst && dst->est_dossier) {
+                src->pere = dst;
+            }
+        } else if (strcmp(commande, "rm") == 0 && result == 2) {
+            noeud *n = trouver_noeud(noeud_courant, argument1);
+            if (n) {
+                supprimer_noeud(n);
+            }
         }
-        fclose(fichier);
+
+        printf("\nArborescence après l'exécution de la commande '%s':\n", ligne);
         afficher_arborescence(racine, 0);
     }
+    fclose(fichier);
+    afficher_arborescence(racine, 0);
 }
