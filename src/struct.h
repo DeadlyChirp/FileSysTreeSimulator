@@ -5,7 +5,7 @@
 #ifndef PROJECT_CCC_STRUCT_H
 #define PROJECT_CCC_STRUCT_H
 
-#endif //PROJECT_CCC_STRUCT_H
+
 struct noeud ;
 struct liste_noeud ;
 struct noeud {
