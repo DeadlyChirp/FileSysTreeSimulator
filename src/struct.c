@@ -6,15 +6,6 @@
 #include <string.h>
 
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        printf("Utilisation : %s <fichier_commandes>\n", argv[0]);
-        return 1;
-    }
-
-    executer_commandes(argv[1]);
-    return 0;
-}
 
 // Implémentation des fonctions
 noeud *creer_noeud(bool est_dossier, const char *nom, noeud *pere) {
