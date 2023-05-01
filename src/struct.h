@@ -34,27 +34,6 @@ void supprimer_noeud(noeud* n);
 
 #endif //PROJECT_CCC_STRUCT_H
 
-
-// #include <stdbool.h>
-// #ifndef CORE_STRUCT_H_
-// #define CORE_STRUCT_H_
-
-// struct Node {
-//     bool isFolder;
-//     char name[100];
-//     struct Node* parent;
-//     struct Node* root;
-//     struct ListNode* child;
-// };
-
-// struct ListNode {
-//     struct Node* no;
-//     struct ListNode* succ;
-// };
-
-// typedef struct Node Node;
-// typedef struct ListNode ListNode;
-
 // Node* CreateNode(bool is_folder, char* name, Node* parent);
 // void DeleteNode(Node* root, char* path);
 // void CopyNode(Node* root, char* src_path, char* dst_path);

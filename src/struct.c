@@ -39,6 +39,7 @@ void ajouter_fils(noeud *parent, noeud *fils) {
         courant->succ = ln;
     }
 }
+
 void supprimer_noeud(noeud *n) {
     liste_noeud *courant = n->fils;
     while (courant) {
