@@ -29,7 +29,7 @@ typedef struct liste_noeud liste_noeud ;
 
 
 // Function declarations
-noeud initArbre(); //va initialiser l'arbre en créant le noeud racine et return le noeud racine
+noeud *initArbre(); //va initialiser l'arbre en créant le noeud racine et return le noeud racine
 
 
 // noeud *creer_noeud(bool est_dossier, const char *nom, noeud *pere);
