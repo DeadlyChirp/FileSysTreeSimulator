@@ -25,12 +25,12 @@ typedef struct liste_noeud liste_noeud ;
 
 
 // Function declarations
-noeud *creer_noeud(bool est_dossier, const char *nom, noeud *pere);
-void ajouter_fils(noeud *parent, noeud *fils);
-void afficher_arborescence(noeud *racine, int profondeur);
-noeud *trouver_noeud(noeud *racine, const char *chemin);
-void executer_commandes(const char *chemin_fichier);
-void supprimer_noeud(noeud* n);
+// noeud *creer_noeud(bool est_dossier, const char *nom, noeud *pere);
+// void ajouter_fils(noeud *parent, noeud *fils);
+// void afficher_arborescence(noeud *racine, int profondeur);
+// noeud *trouver_noeud(noeud *racine, const char *chemin);
+// void executer_commandes(const char *chemin_fichier);
+// void supprimer_noeud(noeud* n);
 
 #endif //PROJECT_CCC_STRUCT_H
 
