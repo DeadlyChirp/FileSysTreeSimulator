@@ -8,3 +8,6 @@
 
 
 // Implémentation des fonctions
+noeud initArbre(){
+    
+}
