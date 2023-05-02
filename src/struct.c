@@ -12,17 +12,17 @@
 //fonction permettant de créer le noeud racine 
 noeud * initArbre(){
 
-    noeud * n = malloc(sizeof(struct noeud));
-    if(n == NULL){
+    noeud * racine = malloc(sizeof(struct noeud));
+    if(racine == NULL){
         printf("Erreur d'allocation de mémoire\n");
         exit(EXIT_FAILURE);
     }
-    n -> est_dossier = true;
-    n -> pere = n;
-    n -> racine = n;
-    n -> fils = NULL;
+    racine -> est_dossier = true;
+    racine -> pere = racine;
+    racine -> racine = racine;
+    racine -> fils = NULL;
 
-    return n;
+    return racine;
 }
 
 noeud *trouverRacine(noeud *n){
@@ -33,13 +33,13 @@ noeud *trouverRacine(noeud *n){
     }
 }
 
-noeud *creerDossier(const char *nom, noeud *pere){
+noeud *creerNoeud(const char *nom, noeud *pere,bool estDossier){
     noeud * n = malloc(sizeof(struct noeud));
     if(n == NULL){
         printf("Erreur d'allocation de mémoire\n");
         exit(EXIT_FAILURE);
     }
-    n -> est_dossier = true;
+    n -> est_dossier = estDossier;
     n -> pere = pere;
     strcpy(n->nom,nom);
     n -> racine = trouverRacine(n);
@@ -48,9 +48,30 @@ noeud *creerDossier(const char *nom, noeud *pere){
     return n;
 }
 
+bool estDossier(noeud *n){
+    if(n->est_dossier) return true;
+    return false;
+}
+
+bool ajouterFils(noeud *parent, noeud *fils){
+    if( !estDossier(parent) ) return false;
+    if(parent -> fils == NULL){
+        liste_noeud fils = //AAAAAAAAAAAAAAA
+    }
+}
+
+// j'aimerai faire un afficher() qui fonctionne comme :
+// racine
+// | A1
+// | | filsA1-1
+// | | filsA1-2
+// | | | filsfils...
+// | A2 
+
+
 int main(){
     noeud * nouveau  = initArbre();
     assert(nouveau -> racine == trouverRacine(nouveau));
-    creerDossier("A1", nouveau);
+    creerNoeud("A1", nouveau,true);
     return EXIT_SUCCESS;
 }
