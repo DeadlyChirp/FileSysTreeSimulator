@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <assert.h>
 
 
 // Implémentation des fonctions
@@ -46,4 +46,11 @@ noeud *creerDossier(const char *nom, noeud *pere){
     n -> fils = NULL;
 
     return n;
+}
+
+int main(){
+    noeud * nouveau  = initArbre();
+    assert(nouveau -> racine == trouverRacine(nouveau));
+    creerDossier("A1", nouveau);
+    return EXIT_SUCCESS;
 }
