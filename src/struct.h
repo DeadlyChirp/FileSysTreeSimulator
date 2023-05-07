@@ -32,7 +32,8 @@ typedef struct liste_noeud liste_noeud ;
 noeud *initArbre(); //va initialiser l'arbre en créant le noeud racine et return le noeud racine
 noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier);
 noeud *trouverRacine(noeud *n);
-bool ajouter_fils(noeud *parent, noeud *fils);
+bool ajouterFils(noeud *parent, noeud *fils);
+liste_noeud *initListeNoeud(noeud *parent, noeud *enfant);
 // noeud *creer_noeud(bool est_dossier, const char *nom, noeud *pere);
 // void afficher_arborescence(noeud *racine, int profondeur);
 // noeud *trouver_noeud(noeud *racine, const char *chemin);

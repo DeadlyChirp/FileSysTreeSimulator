@@ -53,11 +53,36 @@ bool estDossier(noeud *n){
     return false;
 }
 
-bool ajouterFils(noeud *parent, noeud *fils){
+liste_noeud *initListeNoeud(noeud *parent, noeud *fils){
+    liste_noeud *liste = malloc(sizeof(*liste));
+
+    if (liste == NULL || fils == NULL || parent == NULL){
+        exit(EXIT_FAILURE);
+    }
+    liste -> no = fils;
+    liste -> succ = NULL;
+
+    return liste;
+}
+
+bool ajouterFils(noeud *parent, noeud *enfant){
     if( !estDossier(parent) ) return false;
     if(parent -> fils == NULL){
-        liste_noeud fils = //AAAAAAAAAAAAAAA
+        liste_noeud *enfant = initListeNoeud(parent,enfant);
+        parent -> fils = enfant;
+        if (parent -> fils == NULL){
+            return false;
+        }
+        return true;
+    } else {
+        noeud *tmp = parent;
+        while (tmp -> fils -> succ != NULL){
+            tmp -> fils = parent -> fils -> succ;
+        }
+        tmp -> fils -> succ = enfant;
+        return true;
     }
+    return false;
 }
 
 // j'aimerai faire un afficher() qui fonctionne comme :
