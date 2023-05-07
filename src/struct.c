@@ -53,13 +53,13 @@ bool estDossier(noeud *n){
     return false;
 }
 
-liste_noeud *initListeNoeud(noeud *parent, noeud *fils){
+liste_noeud *initListeNoeud(noeud *n){
     liste_noeud *liste = malloc(sizeof(*liste));
 
-    if (liste == NULL || fils == NULL || parent == NULL){
+    if (liste == NULL || n == NULL){
         exit(EXIT_FAILURE);
     }
-    liste -> no = fils;
+    liste -> no = n;
     liste -> succ = NULL;
 
     return liste;
@@ -68,8 +68,8 @@ liste_noeud *initListeNoeud(noeud *parent, noeud *fils){
 bool ajouterFils(noeud *parent, noeud *enfant){
     if( !estDossier(parent) ) return false;
     if(parent -> fils == NULL){
-        liste_noeud *enfant = initListeNoeud(parent,enfant);
-        parent -> fils = enfant;
+        liste_noeud *ln = initListeNoeud(enfant);
+        parent -> fils = ln;
         if (parent -> fils == NULL){
             return false;
         }
@@ -79,7 +79,8 @@ bool ajouterFils(noeud *parent, noeud *enfant){
         while (tmp -> fils -> succ != NULL){
             tmp -> fils = parent -> fils -> succ;
         }
-        tmp -> fils -> succ = enfant;
+        liste_noeud *ln = initListeNoeud(enfant);
+        tmp -> fils -> succ = ln;
         return true;
     }
     return false;

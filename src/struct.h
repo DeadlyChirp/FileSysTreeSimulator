@@ -33,7 +33,7 @@ noeud *initArbre(); //va initialiser l'arbre en créant le noeud racine et retur
 noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier);
 noeud *trouverRacine(noeud *n);
 bool ajouterFils(noeud *parent, noeud *fils);
-liste_noeud *initListeNoeud(noeud *parent, noeud *enfant);
+liste_noeud *initListeNoeud(noeud *n);
 // noeud *creer_noeud(bool est_dossier, const char *nom, noeud *pere);
 // void afficher_arborescence(noeud *racine, int profondeur);
 // noeud *trouver_noeud(noeud *racine, const char *chemin);
