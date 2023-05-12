@@ -34,11 +34,11 @@ noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier);
 noeud *trouverRacine(noeud *n);
 bool ajouterFils(noeud *parent, noeud *fils);
 liste_noeud *initListeNoeud(noeud *n);
-// noeud *creer_noeud(bool est_dossier, const char *nom, noeud *pere);
-// void afficher_arborescence(noeud *racine, int profondeur);
+void afficher(noeud *racine, int profondeur);
+bool supprimerNoeud(noeud *n);
+bool supprimerBranche(noeud *n);
 // noeud *trouver_noeud(noeud *racine, const char *chemin);
 // void executer_commandes(const char *chemin_fichier);
-// void supprimer_noeud(noeud* n);
 
 #endif //PROJECT_CCC_STRUCT_H
 
