@@ -63,6 +63,5 @@ bool supprimerBranche(noeud *n);
 //choses à résoudre!!!!!!!!!
 //noeud courant vraiment important mais je ne sais pas comment le faire, équivalent d'une variable static?
 //mettre en place un système pour lire les chemins
-//modifier système d'affichage pour faire la distinction entre les dossiers et les fichiers
 
 //imo dernière commande est parsing de fichier d'input une fois que le reste fonctionne

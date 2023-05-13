@@ -100,7 +100,11 @@ void afficher(noeud* courant, int profondeur) {
     if (courant->nom[0] == '\0'){
         printf("Racine \n");
     } else {
-        printf("%s\n", courant->nom);
+        if(courant->est_dossier){
+            printf("\033[32;44m%s\033[0m\n", courant->nom);
+        } else {
+            printf("%s\n", courant->nom);
+        }
     }
 
     if (courant->est_dossier && courant->fils != NULL) {
@@ -161,8 +165,6 @@ bool supprimerBranche(noeud* n){
     return(supprimerNoeud(n));
     
 }
-
-//je supprime TOUS les enfants du pere au lieu de juste le noeud visé
 
 
 int main() {
