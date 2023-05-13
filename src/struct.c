@@ -133,15 +133,21 @@ bool supprimerNoeud(noeud *n){
 
     if(n -> pere != n){
         noeud *pere = n->pere;
-        liste_noeud * enfant = pere -> fils;
-        while(enfant -> succ -> no != n){
+        liste_noeud *enfant = pere -> fils;
+        liste_noeud *precedent;
+        while(enfant -> no != n){
+            precedent = enfant;
             enfant = enfant -> succ;
         }
-        liste_noeud * tmp = enfant->succ->succ;
-        free(enfant->succ);
-        enfant->succ = tmp;
+        if(precedent != NULL){
+            //cas où n n'est pas le premier noeud de la liste
+            precedent->succ = enfant->succ;
+            free(enfant);
+        } else {
+            pere->fils = pere->fils->succ;
+            free(enfant);
+        }
     }
-
     free(n);
     return true;
 }
@@ -165,6 +171,48 @@ bool supprimerBranche(noeud* n){
     return(supprimerNoeud(n));
 }
 
+bool supprimerBrancheEtNoeud(noeud* n) {
+    if (n == NULL) {
+        return false;
+    }
+    
+    if (n->est_dossier) {
+        if (n->fils != NULL) {
+            liste_noeud* liste = n->fils;
+            while (liste != NULL) {
+                liste_noeud* suivant = liste->succ;
+                supprimerBrancheEtNoeud(liste->no);
+                free(liste);
+                liste = suivant;
+            }
+            n->fils = NULL;
+        }
+    }
+    
+    if (n->pere != n) {
+        noeud* pere = n->pere;
+        liste_noeud* enfant = pere->fils;
+        liste_noeud* precedent = NULL;
+        
+        while (enfant != NULL && enfant->no != n) {
+            precedent = enfant;
+            enfant = enfant->succ;
+        }
+        
+        if (enfant != NULL) {
+            if (precedent != NULL) {
+                precedent->succ = enfant->succ;
+            } else {
+                pere->fils = enfant->succ;
+            }
+            free(enfant);
+        }
+    }
+    
+    free(n);
+    return true;
+}
+
 
 int main() {
     noeud *racine = initArbre();
@@ -177,9 +225,20 @@ int main() {
 
     afficher(racine, 0);
 
-    printf("la branche a été supprimé : %d \n", supprimerBranche(A2));
+    // printf("la branche a été supprimé : %d \n", supprimerBranche(A1));
+    // supprimerNoeud(A4);
+    // afficher(racine, 0);
+    // supprimerNoeud(A3);
+    // afficher(racine, 0);
+    // supprimerNoeud(A1);
 
-    afficher(racine, 0);
+    // afficher(racine, 0);
+    // supprimerBrancheEtNoeud(A1);
+
+    printf("la branche a été supprimé : %d \n", supprimerBrancheEtNoeud(A1));
+
+    afficher(racine,0);
+
 
     return EXIT_SUCCESS;
 }
