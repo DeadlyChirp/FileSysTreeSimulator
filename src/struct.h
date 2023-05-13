@@ -37,11 +37,12 @@ liste_noeud *initListeNoeud(noeud *n);
 void afficher(noeud *racine, int profondeur);
 bool supprimerNoeud(noeud *n);
 bool supprimerBranche(noeud *n);
-// noeud *trouver_noeud(noeud *racine, const char *chemin);
-// void executer_commandes(const char *chemin_fichier);
 
 #endif //PROJECT_CCC_STRUCT_H
 
+//liste de commande à faire trouvé chez rayou
+// noeud *trouver_noeud(noeud *racine, const char *chemin);
+// void executer_commandes(const char *chemin_fichier);
 // Node* CreateNode(bool is_folder, char* name, Node* parent);
 // void DeleteNode(Node* root, char* path);
 // void CopyNode(Node* root, char* src_path, char* dst_path);
@@ -57,4 +58,4 @@ bool supprimerBranche(noeud *n);
 // void PrintCurrentDirectory(Node* current_Node, int level);
 // void PrintDirectory(Node* root, int level);
 
-// #endif // CORE_STRUCT_H
+//liste de commande à faire imaginées/trouvées par moi
