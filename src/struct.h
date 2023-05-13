@@ -40,28 +40,40 @@ bool supprimerBranche(noeud *n);
 
 #endif //PROJECT_CCC_STRUCT_H
 
-//liste de commande à faire trouvé chez rayou
+//liste de commande à faire trouvé chez rayou "vidée" de celle déjà faites
 // noeud *trouver_noeud(noeud *racine, const char *chemin);
 // void executer_commandes(const char *chemin_fichier);
 // Node* CreateNode(bool is_folder, char* name, Node* parent);
-// void DeleteNode(Node* root, char* path);
 // void CopyNode(Node* root, char* src_path, char* dst_path);
 // void MoveNode(Node* root, char* src_path, char* dst_path);
 // Node* FindNode(Node* root, char* path);
-// void AddChild(Node* parent, Node* child);
-// void DeleteChild(Node* parent, Node* child);
-// void CreateFile(Node* root, char* path);
 // void ProcessFile(Node* root, char* filename);
-// void CreateFolder(Node* root, char* path);
 // void ChangeDirectory(Node** current_Node, char* path);
 // void ProcessInstruction(Node** current_Node, char* instruction);
 // void PrintCurrentDirectory(Node* current_Node, int level);
 // void PrintDirectory(Node* root, int level);
 
-//liste de commande à faire imaginées/trouvées par moi
+//liste de commande à faire imaginées/trouvées par moi pdt que je bossais donc je sais qu'elles vont être utiles
+//déplacer
+//lire chemin
+//trouverNoeud
 
 //choses à résoudre!!!!!!!!!
-//noeud courant vraiment important mais je ne sais pas comment le faire, équivalent d'une variable static?
 //mettre en place un système pour lire les chemins
+// Un chemin absolu commencera toujours par "/" alors qu’un chemin relatif commencera par un nom
 
 //imo dernière commande est parsing de fichier d'input une fois que le reste fonctionne
+
+//liste commande nécessaire
+// 1. ls
+// 2. cd chem
+// 3. cd
+// 4. cd ..
+// 5. pwd
+// 6. mkdir nom
+// 7. touch nom
+// 8. rm chem
+// 9. cp chem1 chem2
+// 10. mv chem1 chem2
+// 11. print
+

@@ -6,6 +6,10 @@
 #include <assert.h>
 
 
+//Variable global
+//à partir du moment où l'arbre est créé noeudCourant = racine
+noeud* noeudCourant;
+
 // Implémentation des fonctions
 
 //fonction permettant de créer le noeud racine 
@@ -20,6 +24,8 @@ noeud *initArbre() {
     racine->racine = racine;
     racine->fils = NULL;
     racine->nom[0] = '\0';
+
+    noeudCourant = racine;
 
     return racine;
 }
@@ -94,14 +100,14 @@ bool ajouterFils(noeud *parent, noeud *enfant) {
 
 void afficher(noeud* courant, int profondeur) {
     for (int i = 0; i < profondeur; i++) {
-        printf("|   ");
+        printf("| ");
     }
 
     if (courant->nom[0] == '\0'){
-        printf("Racine \n");
+        printf("\033[32mRacine\033[0m\n");
     } else {
         if(courant->est_dossier){
-            printf("\033[32;44m%s\033[0m\n", courant->nom);
+            printf("\033[32m%s\033[0m\n", courant->nom);
         } else {
             printf("%s\n", courant->nom);
         }
@@ -115,10 +121,6 @@ void afficher(noeud* courant, int profondeur) {
         }
     }
 }
-
-// décomposer en plusieurs fonctions:
-// -supprimerBranche (parcours toutes la branche et applique supprimerNoeud)
-// -supprimerNoeud (supprime individuellement le noeud sans chercher les fils)
 
 bool supprimerNoeud(noeud *n){
     if(n == NULL) return false;
@@ -144,8 +146,6 @@ bool supprimerNoeud(noeud *n){
     return true;
 }
 
-//supprime le noeud n et tous ses fils
-//A REVOIR NE FONCTIONNE PAS ENCORE
 bool supprimerBranche(noeud* n){
     if(n == NULL){
         return false;
@@ -163,7 +163,6 @@ bool supprimerBranche(noeud* n){
     }
     
     return(supprimerNoeud(n));
-    
 }
 
 
