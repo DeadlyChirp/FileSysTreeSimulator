@@ -43,7 +43,7 @@ noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier) {
     n->racine = trouverRacine(n);
     n->fils = NULL;
 
-    if (strlen(nom) < 100) {
+    if (strlen(nom) < 100 && nom[0] != '\0') {
         strcpy(n->nom, nom);
     } else {
         printf("Erreur: le nom du noeud est trop long\n");
