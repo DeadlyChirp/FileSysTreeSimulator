@@ -112,47 +112,57 @@ void afficher(noeud* courant, int profondeur) {
     }
 }
 
-// // décomposer en plusieurs fonctions:
-// // -supprimerBranche (parcours toutes la branche et applique supprimerNoeud)
-// // -supprimerNoeud (supprime individuellement le noeud sans chercher les fils)
+// décomposer en plusieurs fonctions:
+// -supprimerBranche (parcours toutes la branche et applique supprimerNoeud)
+// -supprimerNoeud (supprime individuellement le noeud sans chercher les fils)
 
-// bool supprimerNoeud(noeud *n){
-//     if(n == NULL) return false;
-//     if(n -> pere != n){
-//         noeud *pere = n->pere;
-//         pere -> fils = NULL;
-//     }
-//     if (n->est_dossier){
-//         if(n->fils != NULL){
-//             free(n->fils);
-//             n->fils = NULL;
-//         }
-//     }
+bool supprimerNoeud(noeud *n){
+    if(n == NULL) return false;
+    if (n->est_dossier){
+        if(n->fils != NULL){
+            free(n->fils);
+            n->fils = NULL;
+        }
+    }
 
-//     free(n);
-// }
+    if(n -> pere != n){
+        noeud *pere = n->pere;
+        liste_noeud * enfant = pere -> fils;
+        while(enfant -> succ -> no != n){
+            enfant = enfant -> succ;
+        }
+        liste_noeud * tmp = enfant->succ->succ;
+        free(enfant->succ);
+        enfant->succ = tmp;
+    }
 
-// //supprime le noeud n et tous ses fils
-// //A REVOIR NE FONCTIONNE PAS ENCORE
-// bool supprimerBranche(noeud* n){
-//     if(n == NULL){
-//         return false;
-//     }
-//     if (n -> est_dossier){
-//         if(n -> fils != NULL){
-//             liste_noeud* liste = n->fils;
-//             while (liste -> succ != NULL) {
-//                 supprimer_noeud(liste->no);  
-//                 liste = liste->succ;
-//             }
-//         }
-//     }
-//     if(n -> pere != NULL){
-//         noeud* pere = n -> pere;
-//         pere -> fils = NULL;  
-//     } 
-//     free(n);
-// }
+    free(n);
+    return true;
+}
+
+//supprime le noeud n et tous ses fils
+//A REVOIR NE FONCTIONNE PAS ENCORE
+bool supprimerBranche(noeud* n){
+    if(n == NULL){
+        return false;
+    }
+    if (n -> est_dossier){
+        if(n -> fils != NULL){
+            liste_noeud* liste = n->fils;
+            while (liste -> succ != NULL) {
+                liste_noeud *suivant = liste->succ;
+                supprimerBranche(liste->no);
+                free(liste);
+                liste = suivant;
+            }
+        }
+    }
+    
+    return(supprimerNoeud(n));
+    
+}
+
+//je supprime TOUS les enfants du pere au lieu de juste le noeud visé
 
 
 int main() {
@@ -163,6 +173,10 @@ int main() {
     noeud *A3 = creerNoeud("A3", A1, true);
     noeud *A4 = creerNoeud("A4", A1, true);
     noeud *F1 = creerNoeud("F1", A2, false);
+
+    afficher(racine, 0);
+
+    printf("la branche a été supprimé : %d \n", supprimerBranche(A2));
 
     afficher(racine, 0);
 
