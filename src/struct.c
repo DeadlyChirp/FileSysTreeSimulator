@@ -122,32 +122,81 @@ void afficher(noeud* courant, int profondeur) {
     }
 }
 
+// bool supprimerNoeud(noeud *n){
+//     if(n == NULL) return false;
+//     if (n->est_dossier){
+//         if(n->fils != NULL){
+//             free(n->fils);
+//             n->fils = NULL;
+//         }
+//     }
+
+//     if(n -> pere != n){
+//         noeud *pere = n->pere;
+//         liste_noeud *enfant = pere -> fils;
+//         liste_noeud *precedent;
+//         while(enfant -> no != n){
+//             precedent = enfant;
+//             enfant = enfant -> succ;
+//         }
+//         if(precedent != NULL){
+//             //cas où n n'est pas le premier noeud de la liste
+//             precedent->succ = enfant->succ;
+//             free(enfant);
+//         } else {
+//             pere->fils = pere->fils->succ;
+//             free(enfant);
+//         }
+//     }
+//     free(n);
+//     return true;
+// }
+
+// bool supprimerBranche(noeud* n){
+//     if(n == NULL){
+//         return false;
+//     }
+//     if (n -> est_dossier){
+//         if(n -> fils != NULL){
+//             liste_noeud* liste = n->fils;
+//             while (liste -> succ != NULL) {
+//                 liste_noeud *suivant = liste->succ;
+//                 supprimerBranche(liste->no);
+//                 free(liste);
+//                 liste = suivant;
+//             }
+//         }
+//     }
+    
+//     return(supprimerNoeud(n));
+// }
+
 bool supprimerNoeud(noeud *n){
     if(n == NULL) return false;
     if (n->est_dossier){
         if(n->fils != NULL){
-            free(n->fils);
-            n->fils = NULL;
+            supprimerBranche(n);
         }
     }
 
     if(n -> pere != n){
         noeud *pere = n->pere;
-        liste_noeud *enfant = pere -> fils;
-        liste_noeud *precedent;
-        while(enfant -> no != n){
-            precedent = enfant;
+        liste_noeud * enfant = pere -> fils;
+        liste_noeud * prev = NULL;
+        while(enfant != NULL && enfant -> no != n){
+            prev = enfant;
             enfant = enfant -> succ;
         }
-        if(precedent != NULL){
-            //cas où n n'est pas le premier noeud de la liste
-            precedent->succ = enfant->succ;
-            free(enfant);
-        } else {
-            pere->fils = pere->fils->succ;
+        if (enfant != NULL) {
+            if (prev == NULL) {
+                pere->fils = enfant->succ;
+            } else {
+                prev->succ = enfant->succ;
+            }
             free(enfant);
         }
     }
+
     free(n);
     return true;
 }
@@ -157,14 +206,8 @@ bool supprimerBranche(noeud* n){
         return false;
     }
     if (n -> est_dossier){
-        if(n -> fils != NULL){
-            liste_noeud* liste = n->fils;
-            while (liste -> succ != NULL) {
-                liste_noeud *suivant = liste->succ;
-                supprimerBranche(liste->no);
-                free(liste);
-                liste = suivant;
-            }
+        while(n -> fils != NULL){
+            supprimerBranche(n -> fils -> no);
         }
     }
     
@@ -217,11 +260,22 @@ bool supprimerBrancheEtNoeud(noeud* n) {
 int main() {
     noeud *racine = initArbre();
     
+    //création d'un arbre de test de profondeur 5
     noeud *A1 = creerNoeud("A1", racine, true);
     noeud *A2 = creerNoeud("A2", racine, true);
     noeud *A3 = creerNoeud("A3", A1, true);
     noeud *A4 = creerNoeud("A4", A1, true);
     noeud *F1 = creerNoeud("F1", A2, false);
+    noeud *F2 = creerNoeud("F2", A2, false);
+    noeud *F3 = creerNoeud("F3", A2, false);
+    //création fils de A3 et A4
+    noeud *A5 = creerNoeud("A5", A3, true);
+    noeud *A6 = creerNoeud("A6", A3, true);
+    noeud *A7 = creerNoeud("A7", A4, true);
+    //fils de A5
+    noeud *F4 = creerNoeud("F4", A5, false);
+    //fils de A6
+    noeud *F5 = creerNoeud("F5", A6, false);
 
     afficher(racine, 0);
 
@@ -235,7 +289,7 @@ int main() {
     // afficher(racine, 0);
     // supprimerBrancheEtNoeud(A1);
 
-    printf("la branche a été supprimé : %d \n", supprimerBrancheEtNoeud(A1));
+    printf("la branche a été supprimé : %d \n", supprimerBranche(A1));
 
     afficher(racine,0);
 
