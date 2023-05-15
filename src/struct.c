@@ -171,11 +171,56 @@ void afficher(noeud* courant, int profondeur) {
 //     return(supprimerNoeud(n));
 // }
 
-bool supprimerNoeud(noeud *n){
+// bool supprimerNoeud(noeud *n){
+//     if(n == NULL) return false;
+//     if (n->est_dossier){
+//         if(n->fils != NULL){
+//             supprimerBranche(n);
+//         }
+//     }
+
+//     if(n -> pere != n){
+//         noeud *pere = n->pere;
+//         liste_noeud * enfant = pere -> fils;
+//         liste_noeud * prev = NULL;
+//         while(enfant != NULL && enfant -> no != n){
+//             prev = enfant;
+//             enfant = enfant -> succ;
+//         }
+//         if (enfant != NULL) {
+//             if (prev == NULL) {
+//                 pere->fils = enfant->succ;
+//             } else {
+//                 prev->succ = enfant->succ;
+//             }
+//             free(enfant);
+//         }
+//     }
+
+//     free(n);
+//     return true;
+// }
+
+// bool supprimerBranche(noeud* n){
+//     if(n == NULL){
+//         return false;
+//     }
+//     if (n -> est_dossier){
+//         while(n -> fils != NULL){
+//             supprimerBranche(n -> fils -> no);
+//         }
+//     }
+    
+//     return(supprimerNoeud(n));
+// }
+
+bool supprimer(noeud *n){
+    if(n == noeudCourant) noeudCourant = trouverRacine(noeudCourant);
     if(n == NULL) return false;
+    
     if (n->est_dossier){
-        if(n->fils != NULL){
-            supprimerBranche(n);
+        while(n -> fils != NULL){
+            supprimer(n -> fils -> no);
         }
     }
 
@@ -201,61 +246,75 @@ bool supprimerNoeud(noeud *n){
     return true;
 }
 
-bool supprimerBranche(noeud* n){
-    if(n == NULL){
+
+// bool supprimerBrancheEtNoeud(noeud* n) {
+//     if (n == NULL) {
+//         return false;
+//     }
+    
+//     if (n->est_dossier) {
+//         if (n->fils != NULL) {
+//             liste_noeud* liste = n->fils;
+//             while (liste != NULL) {
+//                 liste_noeud* suivant = liste->succ;
+//                 supprimerBrancheEtNoeud(liste->no);
+//                 free(liste);
+//                 liste = suivant;
+//             }
+//             n->fils = NULL;
+//         }
+//     }
+    
+//     if (n->pere != n) {
+//         noeud* pere = n->pere;
+//         liste_noeud* enfant = pere->fils;
+//         liste_noeud* precedent = NULL;
+        
+//         while (enfant != NULL && enfant->no != n) {
+//             precedent = enfant;
+//             enfant = enfant->succ;
+//         }
+        
+//         if (enfant != NULL) {
+//             if (precedent != NULL) {
+//                 precedent->succ = enfant->succ;
+//             } else {
+//                 pere->fils = enfant->succ;
+//             }
+//             free(enfant);
+//         }
+//     }
+    
+//     free(n);
+//     return true;
+// }
+
+bool deplacerNoeudCourantV1(char s[100]){
+    if(s[0] == '\0'){
+        noeudCourant = trouverRacine(noeudCourant);
+        return true;
+    }
+    if(noeudCourant->fils == NULL){
+        printf("Le noeud courant n'a pas de fils\n");
         return false;
     }
-    if (n -> est_dossier){
-        while(n -> fils != NULL){
-            supprimerBranche(n -> fils -> no);
-        }
-    }
-    
-    return(supprimerNoeud(n));
-}
-
-bool supprimerBrancheEtNoeud(noeud* n) {
-    if (n == NULL) {
-        return false;
-    }
-    
-    if (n->est_dossier) {
-        if (n->fils != NULL) {
-            liste_noeud* liste = n->fils;
-            while (liste != NULL) {
-                liste_noeud* suivant = liste->succ;
-                supprimerBrancheEtNoeud(liste->no);
-                free(liste);
-                liste = suivant;
+    if(noeudCourant -> est_dossier){
+        if (noeudCourant ->fils !=NULL){
+            liste_noeud *liste = noeudCourant->fils;
+            while(liste != NULL){
+                if(strcmp(liste->no->nom, s) == 0){
+                    noeudCourant = liste->no;
+                    printf("Le noeud courant est maintenant %s\n", noeudCourant->nom);
+                    return true;
+                }
+                liste = liste->succ;
             }
-            n->fils = NULL;
-        }
-    }
-    
-    if (n->pere != n) {
-        noeud* pere = n->pere;
-        liste_noeud* enfant = pere->fils;
-        liste_noeud* precedent = NULL;
-        
-        while (enfant != NULL && enfant->no != n) {
-            precedent = enfant;
-            enfant = enfant->succ;
         }
         
-        if (enfant != NULL) {
-            if (precedent != NULL) {
-                precedent->succ = enfant->succ;
-            } else {
-                pere->fils = enfant->succ;
-            }
-            free(enfant);
-        }
     }
-    
-    free(n);
-    return true;
-}
+    return false;
 
+}
 
 int main() {
     noeud *racine = initArbre();
@@ -278,7 +337,11 @@ int main() {
     noeud *F5 = creerNoeud("F5", A6, false);
 
     afficher(racine, 0);
-
+    deplacerNoeudCourantV1("A1");
+    deplacerNoeudCourantV1("A3");
+    afficher(noeudCourant, 0);
+    supprimer(noeudCourant);
+    printf("noeud courant : %s\n", noeudCourant->nom);
     // printf("la branche a été supprimé : %d \n", supprimerBranche(A1));
     // supprimerNoeud(A4);
     // afficher(racine, 0);
@@ -289,7 +352,7 @@ int main() {
     // afficher(racine, 0);
     // supprimerBrancheEtNoeud(A1);
 
-    printf("la branche a été supprimé : %d \n", supprimerBranche(A1));
+    printf("la branche a été supprimé : %d \n", supprimer(A1));
 
     afficher(racine,0);
 

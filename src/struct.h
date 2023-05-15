@@ -35,8 +35,8 @@ noeud *trouverRacine(noeud *n);
 bool ajouterFils(noeud *parent, noeud *fils);
 liste_noeud *initListeNoeud(noeud *n);
 void afficher(noeud *racine, int profondeur);
-bool supprimerNoeud(noeud *n);
-bool supprimerBranche(noeud *n);
+bool supprimer(noeud *n);
+bool deplacerNoeudCourantV1(char s[100]);
 
 #endif //PROJECT_CCC_STRUCT_H
 
