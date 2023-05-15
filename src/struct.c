@@ -122,98 +122,6 @@ void afficher(noeud* courant, int profondeur) {
     }
 }
 
-// bool supprimerNoeud(noeud *n){
-//     if(n == NULL) return false;
-//     if (n->est_dossier){
-//         if(n->fils != NULL){
-//             free(n->fils);
-//             n->fils = NULL;
-//         }
-//     }
-
-//     if(n -> pere != n){
-//         noeud *pere = n->pere;
-//         liste_noeud *enfant = pere -> fils;
-//         liste_noeud *precedent;
-//         while(enfant -> no != n){
-//             precedent = enfant;
-//             enfant = enfant -> succ;
-//         }
-//         if(precedent != NULL){
-//             //cas où n n'est pas le premier noeud de la liste
-//             precedent->succ = enfant->succ;
-//             free(enfant);
-//         } else {
-//             pere->fils = pere->fils->succ;
-//             free(enfant);
-//         }
-//     }
-//     free(n);
-//     return true;
-// }
-
-// bool supprimerBranche(noeud* n){
-//     if(n == NULL){
-//         return false;
-//     }
-//     if (n -> est_dossier){
-//         if(n -> fils != NULL){
-//             liste_noeud* liste = n->fils;
-//             while (liste -> succ != NULL) {
-//                 liste_noeud *suivant = liste->succ;
-//                 supprimerBranche(liste->no);
-//                 free(liste);
-//                 liste = suivant;
-//             }
-//         }
-//     }
-    
-//     return(supprimerNoeud(n));
-// }
-
-// bool supprimerNoeud(noeud *n){
-//     if(n == NULL) return false;
-//     if (n->est_dossier){
-//         if(n->fils != NULL){
-//             supprimerBranche(n);
-//         }
-//     }
-
-//     if(n -> pere != n){
-//         noeud *pere = n->pere;
-//         liste_noeud * enfant = pere -> fils;
-//         liste_noeud * prev = NULL;
-//         while(enfant != NULL && enfant -> no != n){
-//             prev = enfant;
-//             enfant = enfant -> succ;
-//         }
-//         if (enfant != NULL) {
-//             if (prev == NULL) {
-//                 pere->fils = enfant->succ;
-//             } else {
-//                 prev->succ = enfant->succ;
-//             }
-//             free(enfant);
-//         }
-//     }
-
-//     free(n);
-//     return true;
-// }
-
-// bool supprimerBranche(noeud* n){
-//     if(n == NULL){
-//         return false;
-//     }
-//     if (n -> est_dossier){
-//         while(n -> fils != NULL){
-//             supprimerBranche(n -> fils -> no);
-//         }
-//     }
-    
-//     return(supprimerNoeud(n));
-// }
-
 bool supprimer(noeud *n){
     if(n == noeudCourant) noeudCourant = trouverRacine(noeudCourant);
     if(n == NULL) return false;
@@ -247,47 +155,6 @@ bool supprimer(noeud *n){
 }
 
 
-// bool supprimerBrancheEtNoeud(noeud* n) {
-//     if (n == NULL) {
-//         return false;
-//     }
-    
-//     if (n->est_dossier) {
-//         if (n->fils != NULL) {
-//             liste_noeud* liste = n->fils;
-//             while (liste != NULL) {
-//                 liste_noeud* suivant = liste->succ;
-//                 supprimerBrancheEtNoeud(liste->no);
-//                 free(liste);
-//                 liste = suivant;
-//             }
-//             n->fils = NULL;
-//         }
-//     }
-    
-//     if (n->pere != n) {
-//         noeud* pere = n->pere;
-//         liste_noeud* enfant = pere->fils;
-//         liste_noeud* precedent = NULL;
-        
-//         while (enfant != NULL && enfant->no != n) {
-//             precedent = enfant;
-//             enfant = enfant->succ;
-//         }
-        
-//         if (enfant != NULL) {
-//             if (precedent != NULL) {
-//                 precedent->succ = enfant->succ;
-//             } else {
-//                 pere->fils = enfant->succ;
-//             }
-//             free(enfant);
-//         }
-//     }
-    
-//     free(n);
-//     return true;
-// }
 
 bool deplacerNoeudCourantV1(char s[100]){
     if(s[0] == '\0'){
@@ -313,7 +180,95 @@ bool deplacerNoeudCourantV1(char s[100]){
         
     }
     return false;
+}
 
+bool deplacerNoeudCourantV2(char *path){
+    if(path[0] == '\0'){
+        noeudCourant = trouverRacine(noeudCourant);
+        return true;
+    }
+    if(noeudCourant->fils == NULL){
+        printf("Le noeud courant n'a pas de fils\n");
+        return false;
+    }
+    if(noeudCourant -> est_dossier){
+        int count;
+        char **pathFolders = parsePath(path, &count);
+        if (pathFolders != NULL){
+            noeud *courant = noeudCourant;
+            for (int i = 0; i < count; i++){
+                if (strcmp(pathFolders[i], "..") == 0){
+                    courant = courant->pere;
+                } else if (strcmp(pathFolders[i], ".") == 0){
+                    courant = courant;
+                } else {
+                    if (courant->fils != NULL){
+                        liste_noeud *liste = courant->fils;
+                        while(liste != NULL){
+                            if(strcmp(liste->no->nom, pathFolders[i]) == 0){
+                                courant = liste->no;
+                                break;
+                            }
+                            liste = liste->succ;
+                        }
+                    }
+                }
+            }
+            noeudCourant = courant;
+            printf("Le noeud courant est maintenant %s\n", noeudCourant->nom);
+            return true;
+        }
+    }
+    return false;
+}
+
+char **parsePath(const char* path, int* count){
+    int capacity = 10; // Capacité initiale du tableau
+    char** pathFolders = (char**)malloc(capacity * sizeof(char*));
+    *count = 0;
+
+    // Copie la chaîne de caractères pour la modification
+    char* pathCopy = strdup(path);
+
+    // Découpe la chaîne en utilisant '/' comme délimiteur
+    const char delim[] = "/";
+    char* token = strtok(pathCopy, delim);
+    // printf("token reached \n");
+    while (token != NULL) {
+        // printf("while reached\n");
+        // Vérifie si le tableau a atteint sa capacité maximale, le redimensionne si nécessaire
+        if (count == capacity) {
+            // printf("if reached\n");
+            capacity *= 2;
+            pathFolders = (char**)realloc(pathFolders, capacity * sizeof(char*));
+        }
+
+        // printf("count = \n", count);
+        // Alloue de la mémoire pour stocker le nom du dossier et le copie
+        pathFolders[*count] = strdup(token);
+        (*count)++;
+        // printf("while reached after count++\n");
+
+        // Passe au token suivant
+        token = strtok(NULL, "/");
+        // printf("while reached after strtok\n");
+    }
+
+    // Libère la mémoire utilisée pour la copie de la chaîne
+    free(pathCopy);
+    // printf("free reached\n");
+    // printf("count = %p\n", count);
+    return pathFolders;
+}
+
+void printPath(char** path, int count) {
+    for (int i = 0; i < count; i++) {
+        printf("%s", path[i]);
+        if (i < count - 1) {
+            printf("/");
+        }
+    }
+    printf("\n");
 }
 
 int main() {
@@ -337,8 +292,13 @@ int main() {
     noeud *F5 = creerNoeud("F5", A6, false);
 
     afficher(racine, 0);
-    deplacerNoeudCourantV1("A1");
-    deplacerNoeudCourantV1("A3");
+
+    int *count = (int*)malloc(sizeof(int));
+    char** path = parsePath("A1/A3", count);
+    printf("count du main = %p\n", count );
+    printPath(path, 3);
+
+    deplacerNoeudCourantV2("A1/A3");
     afficher(noeudCourant, 0);
     supprimer(noeudCourant);
     printf("noeud courant : %s\n", noeudCourant->nom);

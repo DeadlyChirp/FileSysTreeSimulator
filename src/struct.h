@@ -37,7 +37,7 @@ liste_noeud *initListeNoeud(noeud *n);
 void afficher(noeud *racine, int profondeur);
 bool supprimer(noeud *n);
 bool deplacerNoeudCourantV1(char s[100]);
-
+char **parsePath(const char* path, int *count);
 #endif //PROJECT_CCC_STRUCT_H
 
 //liste de commande à faire trouvé chez rayou "vidée" de celle déjà faites
