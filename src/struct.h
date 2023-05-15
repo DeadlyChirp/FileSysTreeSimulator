@@ -54,8 +54,6 @@ char **parsePath(const char* path, int *count);
 // void PrintDirectory(Node* root, int level);
 
 //liste de commande à faire imaginées/trouvées par moi pdt que je bossais donc je sais qu'elles vont être utiles
-//déplacer
-//lire chemin
 //trouverNoeud
 
 //choses à résoudre!!!!!!!!!

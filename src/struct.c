@@ -182,48 +182,58 @@ bool deplacerNoeudCourantV1(char s[100]){
     return false;
 }
 
+//PROBLÈME, S'ARRÊTE AU PREMIER FILS
+//imo source du problème parse path, plus précisemment count donné en argument
 bool deplacerNoeudCourantV2(char *path){
     if(path[0] == '\0'){
         noeudCourant = trouverRacine(noeudCourant);
+        printf("Le noeud courant est maintenant la racine\n");
         return true;
     }
     if(noeudCourant->fils == NULL){
         printf("Le noeud courant n'a pas de fils\n");
         return false;
     }
-    if(noeudCourant -> est_dossier){
-        int count;
-        char **pathFolders = parsePath(path, &count);
-        if (pathFolders != NULL){
-            noeud *courant = noeudCourant;
-            for (int i = 0; i < count; i++){
-                if (strcmp(pathFolders[i], "..") == 0){
-                    courant = courant->pere;
-                } else if (strcmp(pathFolders[i], ".") == 0){
-                    courant = courant;
-                } else {
-                    if (courant->fils != NULL){
-                        liste_noeud *liste = courant->fils;
-                        while(liste != NULL){
-                            if(strcmp(liste->no->nom, pathFolders[i]) == 0){
-                                courant = liste->no;
-                                break;
-                            }
-                            liste = liste->succ;
+    if(path[0] == '/'){
+        noeudCourant = trouverRacine(noeudCourant);
+    }
+    if (noeudCourant -> est_dossier){
+    int count;
+    char **pathFolders = parsePath(path, &count);
+    if (pathFolders != NULL){
+        noeud *courant = noeudCourant;
+        for (int i = 0; i < count; i++){
+            if (strcmp(pathFolders[i], "..") == 0){
+                courant = courant->pere;
+            } else if (strcmp(pathFolders[i], ".") == 0){
+                courant = courant;
+            } else {
+                if (courant->fils != NULL){
+                    liste_noeud *liste = courant->fils;
+                    while(liste != NULL){
+                        // printf("while reached\n");
+                        if(strcmp(liste->no->nom, pathFolders[i]) == 0){
+                            courant = liste->no;
+                            // printf("if reached\n");
+                            break;
                         }
+                        liste = liste->succ;
                     }
                 }
             }
-            noeudCourant = courant;
-            printf("Le noeud courant est maintenant %s\n", noeudCourant->nom);
-            return true;
+        }
+        noeudCourant = courant;
+        printf("Le noeud courant est maintenant %s\n", noeudCourant->nom);
+        return true;
         }
     }
+    printf("Le chemin n'est pas valide\n");
     return false;
 }
 
 char **parsePath(const char* path, int* count){
     int capacity = 10; // Capacité initiale du tableau
+    int *Pcapacity = &capacity;
     char** pathFolders = (char**)malloc(capacity * sizeof(char*));
     *count = 0;
 
@@ -237,7 +247,7 @@ char **parsePath(const char* path, int* count){
     while (token != NULL) {
         // printf("while reached\n");
         // Vérifie si le tableau a atteint sa capacité maximale, le redimensionne si nécessaire
-        if (count == capacity) {
+        if (count == Pcapacity) {
             // printf("if reached\n");
             capacity *= 2;
             pathFolders = (char**)realloc(pathFolders, capacity * sizeof(char*));
@@ -293,15 +303,18 @@ int main() {
 
     afficher(racine, 0);
 
-    int *count = (int*)malloc(sizeof(int));
-    char** path = parsePath("A1/A3", count);
-    printf("count du main = %p\n", count );
-    printPath(path, 3);
-
-    deplacerNoeudCourantV2("A1/A3");
-    afficher(noeudCourant, 0);
-    supprimer(noeudCourant);
-    printf("noeud courant : %s\n", noeudCourant->nom);
+   
+    printf("test 1:");
+    deplacerNoeudCourantV2("A1/A3"); //fonctionne   
+    printf("test 2:");
+    deplacerNoeudCourantV1("/A2"); //ne fait rien ?
+    printf("test 3:");
+    deplacerNoeudCourantV2("/A1/A6"); //set le noeud courant à la racine
+    printf("test 4:");
+    deplacerNoeudCourantV2("../../A2"); //fonctionne
+    // afficher(noeudCourant, 0);
+    // supprimer(noeudCourant);
+    // printf("noeud courant : %s\n", noeudCourant->nom);
     // printf("la branche a été supprimé : %d \n", supprimerBranche(A1));
     // supprimerNoeud(A4);
     // afficher(racine, 0);
@@ -312,9 +325,9 @@ int main() {
     // afficher(racine, 0);
     // supprimerBrancheEtNoeud(A1);
 
-    printf("la branche a été supprimé : %d \n", supprimer(A1));
+    // printf("la branche a été supprimé : %d \n", supprimer(A1));
 
-    afficher(racine,0);
+    // afficher(racine,0);
 
 
     return EXIT_SUCCESS;
