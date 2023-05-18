@@ -287,6 +287,38 @@ bool bougerNoeud(noeud *n, noeud *nouveauPere){
     return true;
 }
 
+void copierNoeud(noeud *n, noeud *nouveau){
+    if(n == NULL 
+    || nouveau == NULL 
+    || n == nouveau 
+    || n -> pere == nouveau 
+    || n -> pere == n 
+    || nouveau -> est_dossier == false){
+        printf("t1\n");
+        return;
+    } 
+    
+    noeud *copie = creerNoeud(n->nom, nouveau, n->est_dossier);
+
+    if(copie == NULL){
+        return;
+    }
+
+    if (n->est_dossier) {
+        if(n->fils != NULL){
+            liste_noeud *liste = n->fils;
+            while(liste != NULL){
+                if(!liste->no->est_dossier)
+                    ajouterFils(copie,liste->no);
+                if(liste->no->est_dossier)
+                    copierNoeud(liste->no, copie);
+                liste = liste->succ;
+            }
+        }
+    }
+
+}
+
 void printPath(char** path, int count) {
     for (int i = 0; i < count; i++) {
         printf("%s", path[i]);
@@ -319,6 +351,8 @@ int main() {
     //fils de A6
     noeud *F5 = creerNoeud("F5", A6, false);
 
+    afficher(racine, 0);
+    copierNoeud(A1,A2);
     afficher(racine, 0);
 
    

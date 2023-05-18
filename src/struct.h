@@ -40,6 +40,7 @@ bool deplacerNoeudCourant(noeud *n);
 char **parsePath(const char* path);
 noeud *trouverNoeud(const char *path);
 bool bougerNoeud(noeud *n, noeud *nouveauPere);
+void copierNoeud(noeud *n, noeud *nouveau);
 #endif //PROJECT_CCC_STRUCT_H
 
 //liste de commande à faire trouvé chez rayou "vidée" de celle déjà faites
