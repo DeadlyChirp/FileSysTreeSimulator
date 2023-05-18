@@ -322,15 +322,19 @@ int main() {
     afficher(racine, 0);
 
    
-    printf("test 1:");
-    // deplacerNoeudCourant("A1/A3/");   
-    deplacerNoeudCourant(trouverNoeud("/A1/A3/A5"));
+    // printf("test 1:");
+    // // deplacerNoeudCourant("A1/A3/");   
+    // deplacerNoeudCourant(trouverNoeud("/A1/A3/A5"));
 
-    printf("test 2: \n");
+    // printf("test 2: \n");
     
-    bougerNoeud(A2, A3);
+    // bougerNoeud(A2, A3);
 
-    afficher(racine, 0);
+    // afficher(racine, 0);
+    // bougerNoeud(F5,A4);
+    // afficher(racine, 0);
+    // supprimer(F5);
+    // afficher(racine, 0);
 
     // printf("test 2:");
     // deplacerNoeudCourant("/A2"); 
