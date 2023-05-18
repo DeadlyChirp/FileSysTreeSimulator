@@ -154,111 +154,90 @@ bool supprimer(noeud *n){
     return true;
 }
 
-
-
-bool deplacerNoeudCourantV1(char s[100]){
-    if(s[0] == '\0'){
-        noeudCourant = trouverRacine(noeudCourant);
-        return true;
-    }
-    if(noeudCourant->fils == NULL){
-        printf("Le noeud courant n'a pas de fils\n");
-        return false;
-    }
-    if(noeudCourant -> est_dossier){
-        if (noeudCourant ->fils !=NULL){
-            liste_noeud *liste = noeudCourant->fils;
-            while(liste != NULL){
-                if(strcmp(liste->no->nom, s) == 0){
-                    noeudCourant = liste->no;
-                    printf("Le noeud courant est maintenant %s\n", noeudCourant->nom);
-                    return true;
-                }
-                liste = liste->succ;
-            }
-        }
-        
-    }
-    return false;
-}
-
-//PROBLÈME, S'ARRÊTE AU PREMIER FILS
-//imo source du problème parse path, plus précisemment count donné en argument
-bool deplacerNoeudCourantV2(char *path){
+//check les memory leaks
+noeud *trouverNoeud(const char *path){
+    bool found = false;
+    noeud *n = noeudCourant;
+    char **pathTab = parsePath(path);
     if(path[0] == '\0'){
-        noeudCourant = trouverRacine(noeudCourant);
-        printf("Le noeud courant est maintenant la racine\n");
-        return true;
-    }
-    if(noeudCourant->fils == NULL){
-        printf("Le noeud courant n'a pas de fils\n");
-        return false;
+        n = trouverRacine(n);
+        found = true;
+        return n;
     }
     if(path[0] == '/'){
-        noeudCourant = trouverRacine(noeudCourant);
+        n = trouverRacine(noeudCourant);
     }
-    if (noeudCourant -> est_dossier){
-    int count;
-    char **pathFolders = parsePath(path, &count);
-    if (pathFolders != NULL){
-        noeud *courant = noeudCourant;
-        for (int i = 0; i < count; i++){
-            if (strcmp(pathFolders[i], "..") == 0){
-                courant = courant->pere;
-            } else if (strcmp(pathFolders[i], ".") == 0){
-                courant = courant;
-            } else {
-                if (courant->fils != NULL){
-                    liste_noeud *liste = courant->fils;
-                    while(liste != NULL){
-                        // printf("while reached\n");
-                        if(strcmp(liste->no->nom, pathFolders[i]) == 0){
-                            courant = liste->no;
-                            // printf("if reached\n");
-                            break;
-                        }
-                        liste = liste->succ;
+    int i = 0;
+    while(pathTab[i] != NULL){
+        if(n->est_dossier && n->fils != NULL){
+            liste_noeud *liste = n->fils;
+            while(liste != NULL){
+                // printf("%s\n", pathFolders[i]);
+                if(strcmp(pathTab[i],"..")  == 0){
+                    if(n->pere != n ) {
+                        n = n->pere;
+                        found = true;   
+                        i++;
+                        break;
+                    } else {
+                        printf("Le noeud courant est déjà la racine\n");
+                        return NULL;
                     }
                 }
+                if(strcmp(pathTab[i],".")  == 0){
+                    i++;
+                    found = true;
+                    break;
+                }   
+                if(strcmp(liste->no->nom, pathTab[i]) == 0){
+                    n = liste->no;
+                    found = true;
+                    i++;
+                    break;
+                } else { 
+                    liste = liste->succ;
+                }
             }
+            if(found == false){
+                printf("Le noeud %s n'existe pas\n", pathTab[i]);
+                return NULL;
+            }
+        } else {
+            printf("un ndes noeuds du chemin n'est pas un dossier\n");
+            return NULL;
         }
-        noeudCourant = courant;
-        printf("Le noeud courant est maintenant %s\n", noeudCourant->nom);
-        return true;
-        }
-    }
-    printf("Le chemin n'est pas valide\n");
-    return false;
+    } 
+    return n;
 }
 
-char **parsePath(const char* path, int* count){
+bool deplacerNoeudCourant(noeud *n){
+    if(n == NULL) return false;
+    noeudCourant = n;
+    printf("Le noeud courant est maintenant %s\n", noeudCourant->nom);
+    return true;
+}
+
+char **parsePath(const char* path){
     int capacity = 10; // Capacité initiale du tableau
-    int *Pcapacity = &capacity;
     char** pathFolders = (char**)malloc(capacity * sizeof(char*));
-    *count = 0;
+    int count = 0;
 
     // Copie la chaîne de caractères pour la modification
     char* pathCopy = strdup(path);
 
     // Découpe la chaîne en utilisant '/' comme délimiteur
-    const char delim[] = "/";
+    const char *delim = "/";
     char* token = strtok(pathCopy, delim);
-    // printf("token reached \n");
     while (token != NULL) {
-        // printf("while reached\n");
         // Vérifie si le tableau a atteint sa capacité maximale, le redimensionne si nécessaire
-        if (count == Pcapacity) {
-            // printf("if reached\n");
+        if (count == capacity) {
             capacity *= 2;
             pathFolders = (char**)realloc(pathFolders, capacity * sizeof(char*));
         }
 
-        // printf("count = \n", count);
         // Alloue de la mémoire pour stocker le nom du dossier et le copie
-        pathFolders[*count] = strdup(token);
-        (*count)++;
-        // printf("while reached after count++\n");
-
+        pathFolders[count] = strdup(token);
+        count++;
         // Passe au token suivant
         token = strtok(NULL, "/");
         // printf("while reached after strtok\n");
@@ -266,9 +245,46 @@ char **parsePath(const char* path, int* count){
 
     // Libère la mémoire utilisée pour la copie de la chaîne
     free(pathCopy);
-    // printf("free reached\n");
-    // printf("count = %p\n", count);
+    
     return pathFolders;
+}
+
+bool bougerNoeud(noeud *n, noeud *nouveauPere){
+    if(nouveauPere == NULL || n == NULL || n == nouveauPere || n -> pere == nouveauPere || n -> pere == n || nouveauPere -> est_dossier == false) 
+        return false;
+
+    liste_noeud *liste = nouveauPere -> fils;
+    if(liste == NULL) 
+        return false;
+
+    liste_noeud *pre = n->pere->fils;
+    if(pre == NULL) 
+        return false;
+        
+    if(pre->no == n) {
+        n->pere->fils = NULL;
+    } else {
+        while(pre->succ != NULL && pre->succ->no != n){
+            pre = pre->succ;
+        }
+        if(pre->succ != NULL) 
+            pre->succ = pre->succ->succ;
+    }
+
+    while(liste->succ != NULL){
+        liste = liste -> succ;
+    }
+
+    printf("t14\n");
+    liste -> succ = (liste_noeud*)malloc(sizeof(liste_noeud));
+    if(liste -> succ == NULL) // Check if malloc was successful
+        return false;
+        
+    liste -> succ -> no = n; 
+    printf("t15\n");
+    n -> pere = nouveauPere;
+    printf("t16\n");
+    return true;
 }
 
 void printPath(char** path, int count) {
@@ -280,6 +296,8 @@ void printPath(char** path, int count) {
     }
     printf("\n");
 }
+
+
 
 int main() {
     noeud *racine = initArbre();
@@ -305,13 +323,27 @@ int main() {
 
    
     printf("test 1:");
-    deplacerNoeudCourantV2("A1/A3"); //fonctionne   
-    printf("test 2:");
-    deplacerNoeudCourantV1("/A2"); //ne fait rien ?
-    printf("test 3:");
-    deplacerNoeudCourantV2("/A1/A6"); //set le noeud courant à la racine
-    printf("test 4:");
-    deplacerNoeudCourantV2("../../A2"); //fonctionne
+    // deplacerNoeudCourant("A1/A3/");   
+    deplacerNoeudCourant(trouverNoeud("/A1/A3/A5"));
+
+    printf("test 2: \n");
+    
+    bougerNoeud(A2, A3);
+
+    afficher(racine, 0);
+
+    // printf("test 2:");
+    // deplacerNoeudCourant("/A2"); 
+
+    // printf("test 3:");
+    // deplacerNoeudCourant("/A1/A3/A6");
+
+    // // // deplacerNoeudCourant("/A1/A3/A6"); 
+    // printf("test 4:");
+    // deplacerNoeudCourant("../../../A2"); 
+
+    // printf("test 5:");
+    // deplacerNoeudCourant("../../A2");
     // afficher(noeudCourant, 0);
     // supprimer(noeudCourant);
     // printf("noeud courant : %s\n", noeudCourant->nom);

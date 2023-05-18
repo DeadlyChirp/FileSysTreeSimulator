@@ -36,8 +36,10 @@ bool ajouterFils(noeud *parent, noeud *fils);
 liste_noeud *initListeNoeud(noeud *n);
 void afficher(noeud *racine, int profondeur);
 bool supprimer(noeud *n);
-bool deplacerNoeudCourantV1(char s[100]);
-char **parsePath(const char* path, int *count);
+bool deplacerNoeudCourant(noeud *n);
+char **parsePath(const char* path);
+noeud *trouverNoeud(const char *path);
+bool bougerNoeud(noeud *n, noeud *nouveauPere);
 #endif //PROJECT_CCC_STRUCT_H
 
 //liste de commande à faire trouvé chez rayou "vidée" de celle déjà faites
@@ -57,8 +59,6 @@ char **parsePath(const char* path, int *count);
 //trouverNoeud
 
 //choses à résoudre!!!!!!!!!
-//mettre en place un système pour lire les chemins
-// Un chemin absolu commencera toujours par "/" alors qu’un chemin relatif commencera par un nom
 
 //imo dernière commande est parsing de fichier d'input une fois que le reste fonctionne
 
