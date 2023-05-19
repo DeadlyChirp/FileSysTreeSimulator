@@ -81,29 +81,7 @@ bool ajouterFils(noeud *parent, noeud *enfant) {
     return true;
 }
 
-void afficher(noeud* courant, int profondeur) {
-    for (int i = 0; i < profondeur; i++) {
-        printf("| ");
-    }
 
-    if (courant->nom[0] == '\0'){
-        printf("\033[32mRacine\033[0m\n");
-    } else {
-        if(courant->est_dossier){
-            printf("\033[32m%s\033[0m\n", courant->nom);
-        } else {
-            printf("%s\n", courant->nom);
-        }
-    }
-
-    if (courant->est_dossier && courant->fils != NULL) {
-        liste_noeud* liste = courant->fils;
-        while (liste != NULL) {
-            afficher(liste->no, profondeur + 1);
-            liste = liste->succ;
-        }
-    }
-}
 
 liste_noeud *initListeNoeud(noeud *n) {
     liste_noeud *liste = malloc(sizeof(*liste));
@@ -152,59 +130,71 @@ noeud *trouverNoeud(const char *path){
     // Libère la mémoire utilisée pour la copie de la chaîne
     free(pathCopy);
 
-    bool found = false;
-    noeud *n = noeudCourant;
+    bool found;
+    noeud *n;
+
+    if (path[0] == '/') {
+        n = trouverRacine(noeudCourant);
+    } else {
+        n = noeudCourant;
+    }
 
     if(path[0] == '\0'){
         n = trouverRacine(n);
-        found = true;
         return n;
     }
-    if(path[0] == '/'){
-        n = trouverRacine(noeudCourant);
-    }
+
     int i = 0;
     while(pathFolders[i] != NULL){
+        found = false;
         if(n->est_dossier && n->fils != NULL){
             liste_noeud *liste = n->fils;
             while(liste != NULL){
-                // printf("%s\n", pathFolders[i]);
                 if(strcmp(pathFolders[i],"..")  == 0){
                     if(n->pere != n ) {
                         n = n->pere;
                         found = true;
-                        i++;
-                        break;
                     } else {
                         printf("Le noeud courant est déjà la racine\n");
+                        // returning NULL but also need to free pathFolders before doing so
+                        for(int j = 0; j < count; j++)
+                            free(pathFolders[j]);
+                        free(pathFolders);
                         return NULL;
                     }
                 }
-                if(strcmp(pathFolders[i],".")  == 0){
-                    i++;
+                else if(strcmp(pathFolders[i],".")  == 0){
                     found = true;
-                    break;
                 }
-                if(strcmp(liste->no->nom, pathFolders[i]) == 0){
+                else if(strcmp(liste->no->nom, pathFolders[i]) == 0){
                     n = liste->no;
                     found = true;
-                    i++;
-                    break;
-                } else {
-                    liste = liste->succ;
                 }
+
+                if (found)
+                    break;
+                else
+                    liste = liste->succ;
             }
-            if(found == false){
-                printf("Le noeud %s n'existe pas\n", pathFolders[i]);
-                // do not exit here; just return NULL
+            if(!found){
+//                printf("Le noeud %s n'existe pas\n", pathFolders[i]);
+                for(int j = 0; j < count; j++)
+                    free(pathFolders[j]);
+                free(pathFolders);
                 return NULL;
             }
         } else {
-            printf("un des noeuds du chemin n'est pas un dossier\n");
-            exit(EXIT_FAILURE);
+//            printf("un des noeuds du chemin n'est pas un dossier\n");
+            for(int j = 0; j < count; j++)
+                free(pathFolders[j]);
+            free(pathFolders);
             return NULL;
         }
+        i++;
     }
+
+    for(int j = 0; j < count; j++)
+        free(pathFolders[j]);
     free(pathFolders);
     return n;
 }
@@ -249,7 +239,29 @@ bool bougerNoeud(noeud *n, noeud *nouveauPere){
     n -> pere = nouveauPere;
     return true;
 }
+void afficher(noeud* courant, int profondeur) {
+    for (int i = 0; i < profondeur; i++) {
+        printf("| ");
+    }
 
+    if (courant->nom[0] == '\0'){
+        printf("\033[32mRacine\033[0m\n");
+    } else {
+        if(courant->est_dossier){
+            printf("\033[32m%s\033[0m\n", courant->nom);
+        } else {
+            printf("%s\n", courant->nom);
+        }
+    }
+
+    if (courant->est_dossier && courant->fils != NULL) {
+        liste_noeud* liste = courant->fils;
+        while (liste != NULL) {
+            afficher(liste->no, profondeur + 1);
+            liste = liste->succ;
+        }
+    }
+}
 void copierNoeud(noeud *n, noeud *nouveau){
     if(n == NULL || nouveau == NULL || n == nouveau || n -> pere == nouveau || n -> pere == n || nouveau -> est_dossier == false){
         printf("t1\n");
@@ -271,33 +283,48 @@ void copierNoeud(noeud *n, noeud *nouveau){
 
 
 void copierEtCreer(noeud *n, const char *path){
+    // If the source node does not exist, return immediately
+    if (n == NULL) {
+        printf("Source does not exist.\n");
+        return;
+    }
+
     // Attempt to find the node at the specified path
     noeud *nouveau = trouverNoeud(path);
-
 
     // If the node does not exist, create it
     if (nouveau == NULL) {
         // Get parent directory
         char* lastSlash = strrchr(path, '/');
+        noeud *parent;
+
         if (lastSlash != NULL) {
             *lastSlash = '\0';  // Temporarily ends the string at the last slash
-            noeud *parent;
 
             if (path[0] == '/') {
                 parent = trouverRacine(noeudCourant);  // Use root as the parent
+            } else if (path[0] == '\0') {
+                parent = noeudCourant;  // If path is empty, use the current node as the parent
             } else {
                 parent = trouverNoeud(path);  // Find the parent using the path
             }
 
-            if (parent == NULL) {
-                parent = creerNoeud(path, noeudCourant, true);  // Create parent directories as necessary
-            }
             *lastSlash = '/';  // Restores the original string
-
-            // Create the new node under the parent
-            nouveau = creerNoeud(lastSlash + 1, parent, true);
+        } else {
+            // If path does not contain a slash, use the current node as the parent
+            parent = noeudCourant;
         }
+
+        if (parent == NULL) {
+            printf("Parent directory does not exist.\n");
+            return;
+        }
+
+        // Create the new node under the parent
+        const char* nodeName = lastSlash ? lastSlash + 1 : path;
+        nouveau = creerNoeud(nodeName, parent, true);
     }
+
     // If both nodes are directories, copy the contents of the source to the destination
     if (n->est_dossier && nouveau->est_dossier) {
         copierNoeud(n, nouveau);
@@ -312,6 +339,8 @@ void copierEtCreer(noeud *n, const char *path){
         strcpy(nouveau->nom, n->nom);
     }
 }
+
+
 
 
 
@@ -418,36 +447,10 @@ void ImprimerArbreAide(noeud* noeud, int profondeur) {
 void ImprimerArbre(){
     printf("\n---------------- print ---------------\n");
     ImprimerArbreAide(trouverRacine(noeudCourant),0);
-    afficher(trouverRacine(noeudCourant), 0);
+    //afficher(trouverRacine(noeudCourant), 0);
     printf("\n--------------------------------------\n");
 }
 
-
-
-
-//void ImprimerArbreAide(noeud* courant, int profondeur) {
-//    for (int i = 0; i < profondeur; i++) {
-//        printf("| ");
-//    }
-//
-//    if (courant->nom[0] == '\0'){
-//        printf("\033[32mRacine\033[0m\n");
-//    } else {
-//        if(courant->est_dossier){
-//            printf("\033[32m%s\033[0m\n", courant->nom);
-//        } else {
-//            printf("%s\n", courant->nom);
-//        }
-//    }
-//
-//    if (courant->est_dossier && courant->fils != NULL) {
-//        liste_noeud* liste = courant->fils;
-//        while (liste != NULL) {
-//            afficher(liste->no, profondeur + 1);
-//            liste = liste->succ;
-//        }
-//    }
-//}
 
 void TraiterFichier(noeud * racine, char* nomFichier) {
     FILE *file = fopen(nomFichier, "r");
@@ -504,5 +507,6 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
 
     fclose(file);
 }
+
 
 
