@@ -9,7 +9,7 @@ noeud *noeudCourant;
 // // Function declarations
 
 
-// void changerDossier(char *chemin);   
+// void changerDossier(char *chemin);
 
 // void imprimerDosser(char *chemin); //ls
 // int longueurListe(liste_noeud *liste);
@@ -81,9 +81,9 @@ bool ajouterFils(noeud *parent, noeud *enfant) {
     if (!parent -> est_dossier || parent == NULL) {
         return false;
     }
-    
+
     liste_noeud *ln = initListeNoeud(enfant);
-    
+
     if (parent->fils == NULL) {
         parent->fils = ln;
     } else {
@@ -93,7 +93,7 @@ bool ajouterFils(noeud *parent, noeud *enfant) {
         }
         tmp->succ = ln;
     }
-    
+
     return true;
 }
 
@@ -115,7 +115,7 @@ void afficher(noeud* courant, int profondeur) {
     if (courant->est_dossier && courant->fils != NULL) {
         liste_noeud* liste = courant->fils;
         while (liste != NULL) {
-            afficher(liste->no, profondeur + 1);  
+            afficher(liste->no, profondeur + 1);
             liste = liste->succ;
         }
     }
@@ -161,10 +161,10 @@ noeud *trouverNoeud(const char *path){
 
     // Libère la mémoire utilisée pour la copie de la chaîne
     free(pathCopy);
-    
+
     bool found = false;
     noeud *n = noeudCourant;
-    
+
     if(path[0] == '\0'){
         n = trouverRacine(n);
         found = true;
@@ -182,7 +182,7 @@ noeud *trouverNoeud(const char *path){
                 if(strcmp(pathFolders[i],"..")  == 0){
                     if(n->pere != n ) {
                         n = n->pere;
-                        found = true;   
+                        found = true;
                         i++;
                         break;
                     } else {
@@ -194,13 +194,13 @@ noeud *trouverNoeud(const char *path){
                     i++;
                     found = true;
                     break;
-                }   
+                }
                 if(strcmp(liste->no->nom, pathFolders[i]) == 0){
                     n = liste->no;
                     found = true;
                     i++;
                     break;
-                } else { 
+                } else {
                     liste = liste->succ;
                 }
             }
@@ -214,7 +214,7 @@ noeud *trouverNoeud(const char *path){
             Erreur();
             return NULL;
         }
-    } 
+    }
     free(pathFolders);
     return n;
 }
@@ -226,24 +226,24 @@ void ChangerDossier(noeud *n){
 }
 
 bool bougerNoeud(noeud *n, noeud *nouveauPere){
-    if(nouveauPere == NULL || n == NULL || n == nouveauPere || n -> pere == nouveauPere || n -> pere == n || nouveauPere -> est_dossier == false) 
+    if(nouveauPere == NULL || n == NULL || n == nouveauPere || n -> pere == nouveauPere || n -> pere == n || nouveauPere -> est_dossier == false)
         return false;
 
     liste_noeud *liste = nouveauPere -> fils;
-    if(liste == NULL) 
+    if(liste == NULL)
         return false;
 
     liste_noeud *pre = n->pere->fils;
-    if(pre == NULL) 
+    if(pre == NULL)
         return false;
-        
+
     if(pre->no == n) {
         n->pere->fils = NULL;
     } else {
         while(pre->succ != NULL && pre->succ->no != n){
             pre = pre->succ;
         }
-        if(pre->succ != NULL) 
+        if(pre->succ != NULL)
             pre->succ = pre->succ->succ;
     }
 
@@ -254,23 +254,23 @@ bool bougerNoeud(noeud *n, noeud *nouveauPere){
     liste -> succ = (liste_noeud*)malloc(sizeof(liste_noeud));
     if(liste -> succ == NULL) // Check if malloc was successful
         return false;
-        
-    liste -> succ -> no = n; 
+
+    liste -> succ -> no = n;
     n -> pere = nouveauPere;
     return true;
 }
 
 void copierNoeud(noeud *n, noeud * nouveau){
-    if(n == NULL 
-    || nouveau == NULL 
-    || n == nouveau 
-    || n -> pere == nouveau 
-    || n -> pere == n 
-    || nouveau -> est_dossier == false){
+    if(n == NULL
+       || nouveau == NULL
+       || n == nouveau
+       || n -> pere == nouveau
+       || n -> pere == n
+       || nouveau -> est_dossier == false){
         printf("t1\n");
         return;
-    } 
-    
+    }
+
     noeud *copie = creerNoeud(n->nom, nouveau, n->est_dossier);
 
     if(copie == NULL){
@@ -301,7 +301,7 @@ bool supprimer(noeud *n){
     if(n == noeudCourant) 
         Erreur();
     if(n == NULL) return false;
-    
+
     if (n->est_dossier){
         while(n -> fils != NULL){
             supprimer(n -> fils -> no);
@@ -436,62 +436,6 @@ void ImprimerArbre(){
 
 
 void TraiterFichier(noeud * racine, char* nomFichier) {
-    FILE* file = fopen(nomFichier, "r");
-    if (!file) {  // Check if the file is opened successfully
-        printf("Unable to open file: %s\n", nomFichier);
-        return;
-    }
-    char instruction[MAX_LONGUEUR_CHEMIN];
-    char arg1[MAX_LONGUEUR_CHEMIN];
-    char arg2[MAX_LONGUEUR_CHEMIN];
-    noeudCourant = racine;
-    while (fscanf(file, "%s", instruction) != EOF) {
-        if (strcmp(instruction, "mkdir") == 0) {
-            fscanf(file, "%s", arg1);
-            creerNoeud(arg1,noeudCourant,true);
-        } else if (strcmp(instruction, "cd") == 0) {
-            //si cd n'a pas d'argument
-            if (fscanf(file, "%s", arg1) == EOF) {
-                noeudCourant = racine;
-            } else {
-                noeud *nouveau = trouverNoeud(arg1);
-                if (nouveau != NULL) {
-                    noeudCourant = nouveau;
-                }
-            }
-        } else if (strcmp(instruction, "touch") == 0) {
-            fscanf(file, "%s", arg1);
-            creerNoeud(arg1, noeudCourant, false);
-        } else if (strcmp(instruction, "cp") == 0) {
-            fscanf(file, "%s", arg1);
-            fscanf(file, "%s", arg2);
-            noeud *noeudCopier = trouverNoeud(arg1);
-            noeud *nouveau = trouverNoeud(arg2);
-            copierNoeud(noeudCopier, nouveau);
-        } else if (strcmp(instruction, "mv") == 0) {
-            fscanf(file, "%s", arg1);
-            fscanf(file, "%s", arg2);
-            noeud *noeudBouger = trouverNoeud(arg1);
-            noeud *nouveauPere = trouverNoeud(arg2);
-            bougerNoeud(noeudBouger, nouveauPere);
-        } else if (strcmp(instruction, "rm") == 0) {
-            fscanf(file, "%s", arg1);
-            noeud *noeudSupprimer = trouverNoeud(arg1);
-            supprimer(noeudSupprimer);
-        } else if (strcmp(instruction, "ls") == 0) {
-            ImprimerDossier(noeudCourant);
-        } else if (strcmp(instruction, "pwd") == 0) {
-            ImprimerPWD();
-            printf("\n");
-        } else if (strcmp(instruction, "print") == 0) {
-            ImprimerArbre();
-        }
-    }
-    
-    fclose(file);
-}
-
-void lireFichier(noeud *racine, char *nomFichier){
     FILE *file = fopen(nomFichier, "r");
     if (file == NULL) {
         printf("Erreur lors de l'ouverture du fichier.\n");
@@ -547,4 +491,5 @@ void lireFichier(noeud *racine, char *nomFichier){
 
     fclose(file);
 }
+
 
