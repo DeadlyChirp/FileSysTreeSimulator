@@ -206,10 +206,12 @@ noeud *trouverNoeud(const char *path){
             }
             if(found == false){
                 printf("Le noeud %s n'existe pas\n", pathFolders[i]);
+                exit(EXIT_FAILURE);
                 return NULL;
             }
         } else {
             printf("un des noeuds du chemin n'est pas un dossier\n");
+            exit(EXIT_FAILURE);
             return NULL;
         }
     } 
@@ -393,7 +395,7 @@ void ImprimerArbreAide(noeud* noeud, int profondeur) {
 void ImprimerArbre(){
     printf("\n---------------- print ---------------\n");
     ImprimerArbreAide(trouverRacine(noeudCourant),0);
-    afficher(trouverRacine(noeudCourant), 0);
+    // afficher(trouverRacine(noeudCourant), 0);
     printf("\n--------------------------------------\n");
 }
 
