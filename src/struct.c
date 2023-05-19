@@ -196,7 +196,7 @@ noeud *trouverNoeud(const char *path){
             }
             if(found == false){
                 printf("Le noeud %s n'existe pas\n", pathFolders[i]);
-                exit(EXIT_FAILURE);
+                // do not exit here; just return NULL
                 return NULL;
             }
         } else {
@@ -250,37 +250,65 @@ bool bougerNoeud(noeud *n, noeud *nouveauPere){
     return true;
 }
 
-void copierNoeud(noeud *n, noeud * nouveau){
-    if(n == NULL
-       || nouveau == NULL
-       || n == nouveau
-       || n -> pere == nouveau
-       || n -> pere == n
-       || nouveau -> est_dossier == false){
+void copierNoeud(noeud *n, noeud *nouveau){
+    if(n == NULL || nouveau == NULL || n == nouveau || n -> pere == nouveau || n -> pere == n || nouveau -> est_dossier == false){
         printf("t1\n");
         return;
     }
-
-    noeud *copie = creerNoeud(n->nom, nouveau, n->est_dossier);
-
-    if(copie == NULL){
-        return;
-    }
-
     if (n->est_dossier) {
         if(n->fils != NULL){
             liste_noeud *liste = n->fils;
             while(liste != NULL){
-                if(!liste->no->est_dossier)
-                    ajouterFils(copie,liste->no);
-                if(liste->no->est_dossier)
+                noeud *copie = creerNoeud(liste->no->nom, nouveau, liste->no->est_dossier);
+                if(liste->no->est_dossier) {
                     copierNoeud(liste->no, copie);
+                }
                 liste = liste->succ;
             }
         }
     }
-
 }
+
+
+void copierEtCreer(noeud *n, const char *path){
+    // Attempt to find the node at the specified path
+    noeud *nouveau = trouverNoeud(path);
+
+    // Check if the destination is a directory or a file
+    bool isDirectory = (path[strlen(path) - 1] == '/');
+
+    // If the node does not exist, create it
+    if (nouveau == NULL) {
+        // Get parent directory
+        char* lastSlash = strrchr(path, '/');
+        if (lastSlash != NULL) {
+            *lastSlash = '\0';  // Temporarily ends the string at the last slash
+            noeud *parent = trouverNoeud(path);
+            if (parent == NULL) {
+                parent = creerNoeud(path, noeudCourant, true);  // Create parent directories as necessary
+            }
+            *lastSlash = '/';  // Restores the original string
+
+            // Create the new node under the parent
+            nouveau = creerNoeud(lastSlash + 1, noeudCourant, isDirectory ? n->est_dossier : true);
+        }
+    }
+
+    // If both nodes are directories, copy the contents of the source to the destination
+    if (n->est_dossier && nouveau->est_dossier) {
+        copierNoeud(n, nouveau);
+    }
+        // If the source is a file and the destination is a directory, create a copy of the file in the destination
+    else if (!n->est_dossier && nouveau->est_dossier) {
+        creerNoeud(n->nom, nouveau, false);
+    }
+        // If the source is a file and the destination is a file, overwrite the destination file with the source
+    else if (!n->est_dossier && !nouveau->est_dossier) {
+        // Simply renaming the destination node would be equivalent to overwriting the file
+        strcpy(nouveau->nom, n->nom);
+    }
+}
+
 
 
 bool supprimer(noeud *n){
@@ -385,7 +413,7 @@ void ImprimerArbreAide(noeud* noeud, int profondeur) {
 void ImprimerArbre(){
     printf("\n---------------- print ---------------\n");
     ImprimerArbreAide(trouverRacine(noeudCourant),0);
-    // afficher(trouverRacine(noeudCourant), 0);
+    afficher(trouverRacine(noeudCourant), 0);
     printf("\n--------------------------------------\n");
 }
 
@@ -448,8 +476,7 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             token = strtok(NULL, " ");
             char* token2 = strtok(NULL, " ");
             noeud *noeudCopier = trouverNoeud(token);
-            noeud *nouveau = trouverNoeud(token2);
-            copierNoeud(noeudCopier, nouveau);
+            copierEtCreer(noeudCopier, token2);
         } else if (strcmp(token, "mv") == 0) {
             token = strtok(NULL, " ");
             char* token2 = strtok(NULL, " ");
