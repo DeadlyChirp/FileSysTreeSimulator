@@ -37,7 +37,7 @@ char *strdup(const char *str) {
 
 
 
-noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier) {
+noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier) { //mkdir et touch pour dossier et fichier
     noeud *n = malloc(sizeof(struct noeud));
     if (n == NULL) {
         printf("Erreur d'allocation de mémoire\n");
@@ -54,7 +54,6 @@ noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier) {
         printf("Erreur: le nom du noeud est trop long ou pas de nom\n");
         exit(EXIT_FAILURE);
     }
-
     ajouterFils(pere, n);
 
     return n;
@@ -102,33 +101,32 @@ noeud *trouverRacine(noeud *n) {
     }
 }
 
-noeud *trouverNoeud(const char *path){
-    int capacity = 10; // Capacité initiale du tableau
+noeud *trouverNoeud(const char *path){ //Fonction qui cherche le Noeud
+    int capacity = 10;
     char** pathFolders = (char**)malloc(capacity * sizeof(char*));
     int count = 0;
 
-    // Copie la chaîne de caractères pour la modification
+
     char* pathCopy = strdup(path);
 
-    // Découpe la chaîne en utilisant '/' comme délimiteur
+
     const char *delim = "/";
     char* token = strtok(pathCopy, delim);
     while (token != NULL) {
-        // Vérifie si le tableau a atteint sa capacité maximale, le redimensionne si nécessaire
         if (count == capacity) {
             capacity *= 2;
             pathFolders = (char**)realloc(pathFolders, capacity * sizeof(char*));
         }
 
-        // Alloue de la mémoire pour stocker le nom du dossier et le copie
+
         pathFolders[count] = strdup(token);
         count++;
-        // Passe au token suivant
+
         token = strtok(NULL, "/");
-        // printf("while reached after strtok\n");
+
     }
 
-    // Libère la mémoire utilisée pour la copie de la chaîne
+
     free(pathCopy);
 
     bool found;
@@ -158,7 +156,6 @@ noeud *trouverNoeud(const char *path){
                         found = true;
                     } else {
                         printf("Le noeud courant est déjà la racine\n");
-                        // returning NULL but also need to free pathFolders before doing so
                         for(int j = 0; j < count; j++)
                             free(pathFolders[j]);
                         free(pathFolders);
@@ -179,14 +176,12 @@ noeud *trouverNoeud(const char *path){
                     liste = liste->succ;
             }
             if(!found){
-//                printf("Le noeud %s n'existe pas\n", pathFolders[i]);
                 for(int j = 0; j < count; j++)
                     free(pathFolders[j]);
                 free(pathFolders);
                 return NULL;
             }
         } else {
-//            printf("un des noeuds du chemin n'est pas un dossier\n");
             for(int j = 0; j < count; j++)
                 free(pathFolders[j]);
             free(pathFolders);
@@ -200,14 +195,14 @@ noeud *trouverNoeud(const char *path){
     free(pathFolders);
     return n;
 }
-void ChangerDossier(noeud *n){
+void ChangerDossier(noeud *n){ //Equivalent a cd
     if(n == NULL) return;
     printf("Changement de dossier courant\n");
     noeudCourant = n;
     printf("Dossier courant : %s\n", noeudCourant->nom);
 }
 
-bool bougerNoeud(noeud *n, noeud *nouveauPere){
+bool bougerNoeud(noeud *n, noeud *nouveauPere){ //equivalent a mv
     if(nouveauPere == NULL || n == NULL || n == nouveauPere || n -> pere == nouveauPere || n -> pere == n || nouveauPere -> est_dossier == false)
         return false;
 
@@ -234,14 +229,14 @@ bool bougerNoeud(noeud *n, noeud *nouveauPere){
     }
 
     liste -> succ = (liste_noeud*)malloc(sizeof(liste_noeud));
-    if(liste -> succ == NULL) // Check if malloc was successful
+    if(liste -> succ == NULL)
         return false;
 
     liste -> succ -> no = n;
     n -> pere = nouveauPere;
     return true;
 }
-void afficher(noeud* courant, int profondeur) {
+void afficher(noeud* courant, int profondeur) { //afficher style 2
     for (int i = 0; i < profondeur; i++) {
         printf("| ");
     }
@@ -264,7 +259,7 @@ void afficher(noeud* courant, int profondeur) {
         }
     }
 }
-void copierNoeud(noeud *n, noeud *nouveau){
+void copierNoeud(noeud *n, noeud *nouveau){ //equivalent a cp
     if(n == NULL || nouveau == NULL || n == nouveau || n -> pere == nouveau || n -> pere == n || nouveau -> est_dossier == false){
         printf("t1\n");
         return;
@@ -283,8 +278,6 @@ void copierNoeud(noeud *n, noeud *nouveau){
     }
 }
 
-
-//faire fonction Estdescendant
 bool estDescendant(noeud * racine, noeud * n){
     if(n == NULL){
         return false;
@@ -296,8 +289,7 @@ bool estDescendant(noeud * racine, noeud * n){
 }
 
 
-void copierEtCreer(noeud *n, const char *path){
-    // If the source node does not exist, return immediately
+void copierEtCreer(noeud *n, const char *path){ //Equivalent a cp
     if (n == NULL) {
         printf("Source does not exist.\n");
         return;
@@ -306,27 +298,25 @@ void copierEtCreer(noeud *n, const char *path){
     char * copiepath = malloc(sizeof (char )* strlen(path)+sizeof (char)) ;
     strcpy(copiepath , path) ;
 
-    // Attempt to find the node at the specified path
     noeud *nouveau = trouverNoeud(path);
 
-    // If the node does not exist, create it
+
     if (nouveau == NULL) {
-        // Get parent directory
+
         char* lastSlash = strrchr(copiepath, '/');
         noeud *parent = NULL;
 
         if (lastSlash != NULL) {
-            *lastSlash = '\0';  // Temporarily ends the string at the last slash
+            *lastSlash = '\0';
 
             if (path[0] != '\0') {
-                parent = trouverNoeud(copiepath);  // Use root as the parent
+                parent = trouverNoeud(copiepath);
             } else {
-                parent = n->racine;  // If path is empty, use the current node as the parent
+                parent = n->racine;
             }
 
-            *lastSlash = '/';  // Restores the original string
+            *lastSlash = '/';
         } else {
-            // If path does not contain a slash, use the current node as the parent
             parent = noeudCourant;
         }
         if (parent == NULL) {
@@ -345,7 +335,7 @@ void copierEtCreer(noeud *n, const char *path){
     //        free(copiepath);
     //        exit(EXIT_FAILURE);
     //    }
-        // Create the new node under the parent
+
         const char* nodeName = NULL ;
         if (lastSlash == NULL) {
             nodeName = path ;
@@ -359,19 +349,16 @@ void copierEtCreer(noeud *n, const char *path){
         return;
     }
 
-    // verifier que la source n'est pas un ancetre de parent copie (estParent)
-
-    // If both nodes are directories, copy the contents of the source to the destination
     if (n->est_dossier && nouveau->est_dossier) {
         copierNoeud(n, nouveau);
     }
-        // If the source is a file and the destination is a directory, create a copy of the file in the destination
+
     else if (!n->est_dossier && nouveau->est_dossier) {
         creerNoeud(n->nom, nouveau, false);
     }
-        // If the source is a file and the destination is a file, overwrite the destination file with the source
+
     else if (!n->est_dossier && !nouveau->est_dossier) {
-        // Simply renaming the destination node would be equivalent to overwriting the file
+
         strcpy(nouveau->nom, n->nom);
     }
     free(copiepath) ;
@@ -382,7 +369,7 @@ void copierEtCreer(noeud *n, const char *path){
 
 
 
-bool supprimer(noeud *n){
+bool supprimer(noeud *n){ // Equivalent a rm
     if(n == noeudCourant) {
         printf("Vous ne pouvez pas supprimer le dossier dans le quel vous vous situez\n");
         exit(EXIT_FAILURE);
@@ -420,9 +407,9 @@ bool supprimer(noeud *n){
 void ImprimerDossierCourantHelper(noeud * node) {
     if (node->pere != NULL && node->pere != node) {
         ImprimerDossierCourantHelper(node->pere);
-        printf("/%s", node->nom);  // Only print '/' before non-root nodes
+        printf("/%s", node->nom);
     }
-    else if (node->nom[0] != '\0') { // If the node name is not empty, print it
+    else if (node->nom[0] != '\0') {
         printf("%s", node->nom);
     }
 }
@@ -448,7 +435,7 @@ void ImprimerDossier(noeud * dossier) { // Equivalent à ls qui imprime egalemen
     printf("\n--------------------------------------\n");
 }
 
-int LongueurListe(liste_noeud * liste) {
+int LongueurListe(liste_noeud * liste) { //Pour le fils
     int length = 0;
     while (liste) {
         length++;
@@ -489,7 +476,7 @@ void resetNoeudCourant(){
     noeudCourant = NULL;
 }
 
-void ImprimerArbre(){
+void ImprimerArbre(){ //equivalent a print
     printf("\n---------------- print ---------------\n");
     ImprimerArbreAide(trouverRacine(noeudCourant),0);
     //afficher(trouverRacine(noeudCourant), 0);
@@ -497,7 +484,7 @@ void ImprimerArbre(){
 }
 
 
-void TraiterFichier(noeud * racine, char* nomFichier) {
+void TraiterFichier(noeud * racine, char* nomFichier) { // Fonction qui gere tout
     FILE *file = fopen(nomFichier, "r");
     if (file == NULL) {
         printf("Erreur lors de l'ouverture du fichier.\n");
@@ -513,7 +500,6 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             creerNoeud(token, noeudCourant, true);
         } else if (strcmp(token, "cd") == 0) {
             token = strtok(NULL, " ");
-
             if (token == NULL) {
                 noeudCourant = racine;
             } else {
