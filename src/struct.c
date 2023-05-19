@@ -22,7 +22,7 @@ noeud *initArbre() {
     noeud *racine = malloc(sizeof(struct noeud));
     if (racine == NULL) {
         printf("Erreur d'allocation de mémoire\n");
-        exit(EXIT_FAILURE);
+        Erreur();
     }
     racine->est_dossier = true;
     racine->pere = racine;
@@ -57,7 +57,7 @@ noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier) {
     noeud *n = malloc(sizeof(struct noeud));
     if (n == NULL) {
         printf("Erreur d'allocation de mémoire\n");
-        exit(EXIT_FAILURE);
+        Erreur(); 
     }
     n->est_dossier = estDossier;
     n->pere = pere;
@@ -68,7 +68,7 @@ noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier) {
         strcpy(n->nom, nom);
     } else {
         printf("Erreur: le nom du noeud est trop long ou pas de nom\n");
-        exit(EXIT_FAILURE);
+        Erreur();
     }
 
     ajouterFils(pere, n);
@@ -125,7 +125,7 @@ liste_noeud *initListeNoeud(noeud *n) {
     liste_noeud *liste = malloc(sizeof(*liste));
 
     if (liste == NULL || n == NULL) {
-        exit(EXIT_FAILURE);
+        Erreur();
     }
     liste->no = n;
     liste->succ = NULL;
@@ -206,12 +206,12 @@ noeud *trouverNoeud(const char *path){
             }
             if(found == false){
                 printf("Le noeud %s n'existe pas\n", pathFolders[i]);
-                exit(EXIT_FAILURE);
+                Erreur();
                 return NULL;
             }
         } else {
             printf("un des noeuds du chemin n'est pas un dossier\n");
-            exit(EXIT_FAILURE);
+            Erreur();
             return NULL;
         }
     } 
@@ -292,9 +292,14 @@ void copierNoeud(noeud *n, noeud * nouveau){
 
 }
 
+int Erreur(){
+    printf("\033[4;31mERREUR FIN DE LA FONCTION\033[0m\n");
+    exit(EXIT_FAILURE);
+}
 
 bool supprimer(noeud *n){
-    if(n == noeudCourant) noeudCourant = trouverRacine(noeudCourant);
+    if(n == noeudCourant) 
+        Erreur();
     if(n == NULL) return false;
     
     if (n->est_dossier){
@@ -490,7 +495,7 @@ void lireFichier(noeud *racine, char *nomFichier){
     FILE *file = fopen(nomFichier, "r");
     if (file == NULL) {
         printf("Erreur lors de l'ouverture du fichier.\n");
-        exit(1);
+        Erreur();
     }
 
     char line[1024];
