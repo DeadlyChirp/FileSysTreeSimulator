@@ -213,6 +213,7 @@ noeud *trouverNoeud(const char *path){
             return NULL;
         }
     } 
+    free(pathFolders);
     return n;
 }
 void ChangerDossier(noeud *n){
