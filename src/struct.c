@@ -35,6 +35,16 @@ noeud *initArbre() {
     return racine;
 }
 
+char *strdup(const char *str) {
+    size_t len = strlen(str) + 1;
+    char *dup = malloc(len);
+    if (dup != NULL) {
+        strcpy(dup, str);
+    }
+    return dup;
+}
+
+
 noeud *trouverRacine(noeud *n) {
     if (n->pere == n) {
         return n;
