@@ -324,16 +324,16 @@ void ImprimerDossierCourantHelper(noeud * node) {
     if (node->pere != NULL&& node->pere != node) {
         ImprimerDossierCourantHelper(node->pere);
     }
-    printf("/%s", node->nom);
+    printf("%s/", node->nom);
 }
 
 void ImprimerPWD() { // Equivalent à pwd
     printf("----------------- pwd -----------------\n");
-    if (noeudCourant->nom[0] == '\0') {
-        printf("/");
-    } else {
+//    if (noeudCourant->nom[0] == '\0') {
+//        printf("/");
+//    } else {
         ImprimerDossierCourantHelper(noeudCourant);
-    }
+//    }
     printf("\n--------------------------------------\n");
 }
 
@@ -356,7 +356,7 @@ int LongueurListe(liste_noeud * liste) {
     return length;
 }
 //PROF PRINT
-void ImprimerArbreAide(noeud* noeud, int profondeur) {
+void ImprimerArbre(noeud* noeud, int profondeur) {
     for (int i = 0; i < profondeur; i++) {
         printf("=");
     }
@@ -375,50 +375,42 @@ void ImprimerArbreAide(noeud* noeud, int profondeur) {
     }
     printf("\n");
 
-    if (noeud->est_dossier) {
-        liste_noeud *currentChild = noeud->fils;
-        while (currentChild) {
-            ImprimerArbreAide(currentChild->no, profondeur + 1);
-            currentChild = currentChild->succ;
+    if (noeud->est_dossier && noeud->fils != NULL) {
+        liste_noeud* liste = noeud->fils;
+        while (liste != NULL) {
+            ImprimerArbre(liste->no, profondeur + 1);
+            liste = liste->succ;
         }
     }
 }
 
 
 
-void ImprimerArbre() {
-    ImprimerArbreAide(noeudCourant, 0);
-}
-
-
-//void ImprimerArbreAide(noeud * noeud, int profondeur) {
+//void ImprimerArbreAide(noeud* courant, int profondeur) {
 //    for (int i = 0; i < profondeur; i++) {
 //        printf("| ");
 //    }
 //
-//    if (noeud->nom[0] == '\0'){
-//        printf("\033[32mRoot\033[0m\n");
+//    if (courant->nom[0] == '\0'){
+//        printf("\033[32mRacine\033[0m\n");
 //    } else {
-//        if(noeud->est_dossier){
-//            printf("\033[32m%s\033[0m\n", noeud->nom);
+//        if(courant->est_dossier){
+//            printf("\033[32m%s\033[0m\n", courant->nom);
 //        } else {
-//            printf("%s\n", noeud->nom);
+//            printf("%s\n", courant->nom);
 //        }
 //    }
 //
-//    if (noeud->est_dossier && noeud->fils != NULL) {
-//        liste_noeud * list = noeud->fils;
-//        while (list != NULL) {
-//            ImprimerArbreAide(list->no, profondeur + 1);
-//            list = list->succ;
+//    if (courant->est_dossier && courant->fils != NULL) {
+//        liste_noeud* liste = courant->fils;
+//        while (liste != NULL) {
+//            afficher(liste->no, profondeur + 1);
+//            liste = liste->succ;
 //        }
 //    }
 //}
-//
-//
-//void ImprimerArbre() {
-//    ImprimerArbreAide(noeudCourant, 0);
-//}
+
+
 
 
 
@@ -469,7 +461,7 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             ImprimerPWD();
             printf("\n");
         } else if (strcmp(instruction, "print") == 0) {
-            ImprimerArbre();
+            ImprimerArbre(trouverRacine(noeudCourant),0);
         }
     }
     fclose(file);
