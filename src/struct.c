@@ -339,10 +339,10 @@ void copierEtCreer(noeud *n, const char *path){
             free(copiepath) ;
             return;
         }
-        if(estDescendant(n,parent)){
-            printf("\nOn ne peut pas copier le parent du dossier/fichier\n");
-            free(copiepath);
-        }
+//        if(estDescendant(n,parent)){
+//            printf("\nOn ne peut pas copier le parent du dossier/fichier\n");
+//            free(copiepath);
+//        }
         // Create the new node under the parent
         const char* nodeName = NULL ;
         if (lastSlash == NULL) {
