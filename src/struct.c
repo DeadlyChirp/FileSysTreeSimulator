@@ -551,5 +551,6 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
     fclose(file);
 }
 
-
+//j'aime presque ma vie
+//christophe sans memory leaks
 
