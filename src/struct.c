@@ -280,19 +280,6 @@ void copierNoeud(noeud *n, noeud * nouveau){
 
 }
 
-
-void copierNoeudAvecCreation(noeud *n, noeud *nouveau) {
-    // Check if the parent of the new node exists.
-    // If not, we need to create it.
-    if (nouveau->pere == NULL || nouveau->pere->est_dossier == false) {
-        nouveau->pere = creerNoeud(nouveau->nom, NULL, true);  // Assuming this creates a new directory
-    }
-
-    // Then proceed with the regular copy operation
-    copierNoeud(n, nouveau);
-}
-
-
 bool supprimer(noeud *n){
     if(n == noeudCourant) noeudCourant = trouverRacine(noeudCourant);
     if(n == NULL) return false;
