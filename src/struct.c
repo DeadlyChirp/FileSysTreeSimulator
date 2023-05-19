@@ -35,13 +35,7 @@ char *strdup(const char *str) {
 }
 
 
-noeud *trouverRacine(noeud *n) {
-    if (n->pere == n) {
-        return n;
-    } else {
-        return trouverRacine(n->pere);
-    }
-}
+
 
 noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier) {
     noeud *n = malloc(sizeof(struct noeud));
@@ -122,7 +116,13 @@ liste_noeud *initListeNoeud(noeud *n) {
 
     return liste;
 }
-
+noeud *trouverRacine(noeud *n) {
+    if (n->pere == n) {
+        return n;
+    } else {
+        return trouverRacine(n->pere);
+    }
+}
 noeud *trouverNoeud(const char *path){
     int capacity = 10; // Capacité initiale du tableau
     char** pathFolders = (char**)malloc(capacity * sizeof(char*));
@@ -283,17 +283,23 @@ void copierEtCreer(noeud *n, const char *path){
         char* lastSlash = strrchr(path, '/');
         if (lastSlash != NULL) {
             *lastSlash = '\0';  // Temporarily ends the string at the last slash
-            noeud *parent = trouverNoeud(path);
+            noeud *parent;
+
+            if (path[0] == '/') {
+                parent = trouverRacine(noeudCourant);  // Use root as the parent
+            } else {
+                parent = trouverNoeud(path);  // Find the parent using the path
+            }
+
             if (parent == NULL) {
                 parent = creerNoeud(path, noeudCourant, true);  // Create parent directories as necessary
             }
             *lastSlash = '/';  // Restores the original string
 
             // Create the new node under the parent
-            nouveau = creerNoeud(lastSlash + 1, noeudCourant, isDirectory ? n->est_dossier : true);
+            nouveau = creerNoeud(lastSlash + 1, parent, isDirectory ? n->est_dossier : true);
         }
     }
-
     // If both nodes are directories, copy the contents of the source to the destination
     if (n->est_dossier && nouveau->est_dossier) {
         copierNoeud(n, nouveau);
@@ -308,6 +314,7 @@ void copierEtCreer(noeud *n, const char *path){
         strcpy(nouveau->nom, n->nom);
     }
 }
+
 
 
 
