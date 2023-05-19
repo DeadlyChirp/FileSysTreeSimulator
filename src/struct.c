@@ -142,7 +142,6 @@ noeud *trouverNoeud(const char *path){
 
     if(path[0] == '\0'){
         n = trouverRacine(n);
-        free(pathFolders);
         return n;
     }
 
@@ -173,10 +172,8 @@ noeud *trouverNoeud(const char *path){
                     found = true;
                 }
 
-                if (found){
-                    free(pathFolders);
+                if (found)
                     break;
-                }
                 else
                     liste = liste->succ;
             }
@@ -554,6 +551,5 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
     fclose(file);
 }
 
-//j'aime presque ma vie
-//christophe sans memory leaks
+
 
