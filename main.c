@@ -4,13 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
-int main(){
-
+int main(int argc, char* argv[])
+{
+    if (argc != 2) {
+        printf("Usage: %s <filename.txt>\n", argv[0]);
+        return 1;
+    }
     noeud * root;
     root = initArbre();
-    TraiterFichier(root, "testfiles/test1.txt");
-
+    TraiterFichier(root, argv[1]);
+    supprimer(root);
     return EXIT_SUCCESS;
 }
