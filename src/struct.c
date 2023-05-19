@@ -101,6 +101,7 @@ noeud *trouverRacine(noeud *n) {
         return trouverRacine(n->pere);
     }
 }
+
 noeud *trouverNoeud(const char *path){
     int capacity = 10; // Capacité initiale du tableau
     char** pathFolders = (char**)malloc(capacity * sizeof(char*));
@@ -368,7 +369,10 @@ void copierEtCreer(noeud *n, const char *path){
 
 
 bool supprimer(noeud *n){
-    if(n == noeudCourant) noeudCourant = trouverRacine(noeudCourant);
+    if(n == noeudCourant) {
+        printf("Vous ne pouvez pas supprimer le dossier dans le quel vous vous situez\n");
+        exit(EXIT_FAILURE);
+    }
     if(n == NULL) return false;
 
     if (n->est_dossier){
@@ -466,6 +470,11 @@ void ImprimerArbreAide(noeud* noeud, int profondeur) {
         }
     }
 }
+
+void resetNoeudCourant(){
+    noeudCourant = NULL;
+}
+
 void ImprimerArbre(){
     printf("\n---------------- print ---------------\n");
     ImprimerArbreAide(trouverRacine(noeudCourant),0);

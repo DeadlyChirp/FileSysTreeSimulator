@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
     noeud * root;
     root = initArbre();
     TraiterFichier(root, argv[1]);
+    resetNoeudCourant();
     supprimer(root);
     return EXIT_SUCCESS;
 }
