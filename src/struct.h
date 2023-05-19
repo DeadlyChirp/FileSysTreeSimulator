@@ -30,20 +30,19 @@ noeud *initArbre(); //va initialiser l'arbre en créant le noeud racine et retur
 noeud *creerNoeud(const char *nom, noeud *pere, bool estDossier);
 bool ajouterFils(noeud *parent, noeud *fils);
 liste_noeud *initListeNoeud(noeud *n); //mettre le "if == null"
-
 void afficher(noeud *racine, int profondeur); // = imprimerArbre(aide)
-
 noeud *trouverNoeud(const char *path); //mon trouver noeud mais fusionné avec parsePath
 void copierNoeud(noeud *n, noeud *nouveau);
 bool bougerNoeud(noeud *n, noeud *nouveauPere);
-void changerDossier(char *chemin);   
-bool supprimer(noeud *n); 
-
-void imprimerDosser(char *chemin); //ls
-int longueurListe(liste_noeud *liste);
-void imprimerArbreAide(noeud *noeud, int profondeur); //print
-void imprimerArbre(); //print
-void traiterfichier(noeud *racine, char *nomFichier); //processfile
+void ChangerDossier(noeud *n);
+bool supprimer(noeud *n);
+void ImprimerPWD();
+void ImprimerDossierCourantHelper(noeud * node);
+void ImprimerDossier(noeud * dossier);
+int LongueurListe(liste_noeud * liste);
+void ImprimerArbreAide(noeud * noeud, int profondeur);
+void ImprimerArbre();
+void TraiterFichier(noeud * racine, char* nomFichier); //processfile
 
 //trouver racine à voir
 #endif //PROJECT_CCC_STRUCT_H
