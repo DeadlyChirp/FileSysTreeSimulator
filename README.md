@@ -29,7 +29,7 @@ Make
 ```
 ## Execution
 ```bash 
-./prog testfiles/fichier_entree.txt
+./thanhchris testfiles/fichier_entree.txt
 ```
 
 ## Structure de Données
