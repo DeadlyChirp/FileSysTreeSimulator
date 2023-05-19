@@ -240,9 +240,11 @@ bool bougerNoeud(noeud *n, noeud *nouveauPere){
     while(liste->succ != NULL){
         liste = liste -> succ;
     }
+
     liste -> succ = (liste_noeud*)malloc(sizeof(liste_noeud));
     if(liste -> succ == NULL) // Check if malloc was successful
         return false;
+
     liste -> succ -> no = n;
     n -> pere = nouveauPere;
     return true;
@@ -279,6 +281,7 @@ void copierNoeud(noeud *n, noeud * nouveau){
     }
 
 }
+
 
 bool supprimer(noeud *n){
     if(n == noeudCourant) noeudCourant = trouverRacine(noeudCourant);
@@ -466,6 +469,7 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             ImprimerArbre();
         }
     }
+
     fclose(file);
 }
 
