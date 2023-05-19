@@ -43,5 +43,8 @@ int LongueurListe(liste_noeud * liste);
 void ImprimerArbreAide(noeud * noeud, int profondeur);
 void ImprimerArbre();
 void TraiterFichier(noeud * racine, char* nomFichier); //processfile
-//trouver racine à voir
+
+
+void copierNoeudAvecCreation(noeud *n, noeud *nouveau);
+
 #endif //PROJECT_CCC_STRUCT_H

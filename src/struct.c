@@ -6,16 +6,6 @@
 
 
 noeud *noeudCourant;
-// // Function declarations
-
-
-// void changerDossier(char *chemin);
-
-// void imprimerDosser(char *chemin); //ls
-// int longueurListe(liste_noeud *liste);
-// void imprimerArbreAide(noeud *noeud, int profondeur); //print
-// void imprimerArbre(); //print
-// void traiterfichier(noeud *racine, char *nomFichier); //processfile
 
 
 noeud *initArbre() {
@@ -250,11 +240,9 @@ bool bougerNoeud(noeud *n, noeud *nouveauPere){
     while(liste->succ != NULL){
         liste = liste -> succ;
     }
-
     liste -> succ = (liste_noeud*)malloc(sizeof(liste_noeud));
     if(liste -> succ == NULL) // Check if malloc was successful
         return false;
-
     liste -> succ -> no = n;
     n -> pere = nouveauPere;
     return true;
@@ -290,6 +278,18 @@ void copierNoeud(noeud *n, noeud * nouveau){
         }
     }
 
+}
+
+
+void copierNoeudAvecCreation(noeud *n, noeud *nouveau) {
+    // Check if the parent of the new node exists.
+    // If not, we need to create it.
+    if (nouveau->pere == NULL || nouveau->pere->est_dossier == false) {
+        nouveau->pere = creerNoeud(nouveau->nom, NULL, true);  // Assuming this creates a new directory
+    }
+
+    // Then proceed with the regular copy operation
+    copierNoeud(n, nouveau);
 }
 
 
@@ -426,10 +426,6 @@ void ImprimerArbre(){
 //    }
 //}
 
-
-
-
-
 void TraiterFichier(noeud * racine, char* nomFichier) {
     FILE *file = fopen(nomFichier, "r");
     if (file == NULL) {
@@ -483,7 +479,6 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             ImprimerArbre();
         }
     }
-
     fclose(file);
 }
 
