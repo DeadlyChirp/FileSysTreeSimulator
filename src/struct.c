@@ -333,71 +333,42 @@ void printPath(char** path, int count) {
 
 int main() {
     noeud *racine = initArbre();
-    
-    //création d'un arbre de test de profondeur 5
-    noeud *A1 = creerNoeud("A1", racine, true);
-    noeud *A2 = creerNoeud("A2", racine, true);
-    noeud *A3 = creerNoeud("A3", A1, true);
-    noeud *A4 = creerNoeud("A4", A1, true);
-    noeud *F1 = creerNoeud("F1", A2, false);
-    noeud *F2 = creerNoeud("F2", A2, false);
-    noeud *F3 = creerNoeud("F3", A2, false);
-    //création fils de A3 et A4
-    noeud *A5 = creerNoeud("A5", A3, true);
-    noeud *A6 = creerNoeud("A6", A3, true);
-    noeud *A7 = creerNoeud("A7", A4, true);
-    //fils de A5
-    noeud *F4 = creerNoeud("F4", A5, false);
-    //fils de A6
-    noeud *F5 = creerNoeud("F5", A6, false);
+    // mkdir Rep1
+    // mkdir Rep2
+    // mkdir Rep3
+    // ls
+    // cd Rep1
+    // mkdir Rep11
+    // mkdir Rep12
+    // cd Rep11
+    // touch file111
+    // cd ..
+    // cd Rep12
+    // touch file121
+    // touch file122
+    // pwd
+    // ls
+    // cd
+    // cd Rep2
+    // touch file21
+    // touch file22
+    // cd /Rep1/Rep11
+    // ls
+    // print
+    //simulation de ces instructions
 
-    afficher(racine, 0);
-    copierNoeud(A1,A2);
-    afficher(racine, 0);
+    noeud* rep1 = creerNoeud("Rep1", racine, true);
+    noeud* rep2 = creerNoeud("Rep2", racine, true);
+    noeud* rep3 = creerNoeud("Rep3", racine, true);
+    noeud* rep11 = creerNoeud("Rep11", rep1, true);
+    noeud* rep12 = creerNoeud("Rep12", rep1, true);
+    noeud* file111 = creerNoeud("file111", rep11, false);
+    noeud* file121 = creerNoeud("file121", rep12, false);
+    noeud* file122 = creerNoeud("file122", rep12, false);
+    noeud* file21 = creerNoeud("file21", rep2, false);
+    noeud* file22 = creerNoeud("file22", rep2, false);
 
-   
-    // printf("test 1:");
-    // // deplacerNoeudCourant("A1/A3/");   
-    // deplacerNoeudCourant(trouverNoeud("/A1/A3/A5"));
-
-    // printf("test 2: \n");
-    
-    // bougerNoeud(A2, A3);
-
-    // afficher(racine, 0);
-    // bougerNoeud(F5,A4);
-    // afficher(racine, 0);
-    // supprimer(F5);
-    // afficher(racine, 0);
-
-    // printf("test 2:");
-    // deplacerNoeudCourant("/A2"); 
-
-    // printf("test 3:");
-    // deplacerNoeudCourant("/A1/A3/A6");
-
-    // // // deplacerNoeudCourant("/A1/A3/A6"); 
-    // printf("test 4:");
-    // deplacerNoeudCourant("../../../A2"); 
-
-    // printf("test 5:");
-    // deplacerNoeudCourant("../../A2");
-    // afficher(noeudCourant, 0);
-    // supprimer(noeudCourant);
-    // printf("noeud courant : %s\n", noeudCourant->nom);
-    // printf("la branche a été supprimé : %d \n", supprimerBranche(A1));
-    // supprimerNoeud(A4);
-    // afficher(racine, 0);
-    // supprimerNoeud(A3);
-    // afficher(racine, 0);
-    // supprimerNoeud(A1);
-
-    // afficher(racine, 0);
-    // supprimerBrancheEtNoeud(A1);
-
-    // printf("la branche a été supprimé : %d \n", supprimer(A1));
-
-    // afficher(racine,0);
+    afficher(racine, 0);   
 
 
     return EXIT_SUCCESS;
