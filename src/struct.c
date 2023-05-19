@@ -284,6 +284,16 @@ void copierNoeud(noeud *n, noeud *nouveau){
 
 
 //faire fonction Estdescendant
+bool estDescendant(noeud * racine, noeud * n){
+    if(n == NULL){
+        return false;
+    }
+    if (n == racine){
+        return true;
+    }
+    return estDescendant(racine,n->pere);
+}
+
 
 void copierEtCreer(noeud *n, const char *path){
     // If the source node does not exist, return immediately
@@ -318,19 +328,21 @@ void copierEtCreer(noeud *n, const char *path){
             // If path does not contain a slash, use the current node as the parent
             parent = noeudCourant;
         }
-
         if (parent == NULL) {
             printf("Parent directory does not exist.\n");
             free(copiepath) ;
             return;
         }
-            //check si le noeud est descendant
+
         if (!parent->est_dossier) {
             //
             free(copiepath) ;
             return;
         }
-
+        if(estDescendant(n,parent)){
+            printf("\nOn ne peut pas copier le parent du dossier/fichier\n");
+            free(copiepath);
+        }
         // Create the new node under the parent
         const char* nodeName = NULL ;
         if (lastSlash == NULL) {
