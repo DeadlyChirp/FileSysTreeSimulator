@@ -218,7 +218,9 @@ noeud *trouverNoeud(const char *path){
 }
 void ChangerDossier(noeud *n){
     if(n == NULL) return;
+    printf("Changement de dossier courant\n");
     noeudCourant = n;
+    printf("Dossier courant : %s\n", noeudCourant->nom);
 }
 
 bool bougerNoeud(noeud *n, noeud *nouveauPere){
@@ -391,6 +393,7 @@ void ImprimerArbreAide(noeud* noeud, int profondeur) {
 void ImprimerArbre(){
     printf("\n---------------- print ---------------\n");
     ImprimerArbreAide(trouverRacine(noeudCourant),0);
+    afficher(trouverRacine(noeudCourant), 0);
     printf("\n--------------------------------------\n");
 }
 
@@ -440,11 +443,13 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             fscanf(file, "%s", arg1);
             creerNoeud(arg1,noeudCourant,true);
         } else if (strcmp(instruction, "cd") == 0) {
-            if (fscanf(file, "%s", arg1) != EOF) {
-                // If the next string is not another command
-                if (strcmp(arg1, "mkdir") != 0 && strcmp(arg1, "cd") != 0) {
-                    noeud *dossier = trouverNoeud(arg1);
-                    ChangerDossier(dossier);
+            //si cd n'a pas d'argument
+            if (fscanf(file, "%s", arg1) == EOF) {
+                noeudCourant = racine;
+            } else {
+                noeud *nouveau = trouverNoeud(arg1);
+                if (nouveau != NULL) {
+                    noeudCourant = nouveau;
                 }
             }
         } else if (strcmp(instruction, "touch") == 0) {
@@ -475,6 +480,64 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             ImprimerArbre();
         }
     }
+    
+    fclose(file);
+}
+
+void lireFichier(noeud *racine, char *nomFichier){
+    FILE *file = fopen(nomFichier, "r");
+    if (file == NULL) {
+        printf("Erreur lors de l'ouverture du fichier.\n");
+        exit(1);
+    }
+
+    char line[1024];
+    while (fgets(line, sizeof(line), file) != NULL) {
+        line[strcspn(line, "\n")] = '\0';
+        char* token = strtok(line, " ");
+        if (strcmp(token, "mkdir") == 0) {
+            token = strtok(NULL, " ");
+            creerNoeud(token, noeudCourant, true);
+        } else if (strcmp(token, "cd") == 0) {
+            token = strtok(NULL, " ");
+
+            if (token == NULL) {
+                noeudCourant = racine;
+            } else {
+                noeud *nouveau = trouverNoeud(token);
+                if (nouveau != NULL) {
+                    noeudCourant = nouveau;
+                }
+            }
+        } else if (strcmp(token, "touch") == 0) {
+            token = strtok(NULL, " ");
+            creerNoeud(token, noeudCourant, false);
+        } else if (strcmp(token, "cp") == 0) {
+            token = strtok(NULL, " ");
+            char* token2 = strtok(NULL, " ");
+            noeud *noeudCopier = trouverNoeud(token);
+            noeud *nouveau = trouverNoeud(token2);
+            copierNoeud(noeudCopier, nouveau);
+        } else if (strcmp(token, "mv") == 0) {
+            token = strtok(NULL, " ");
+            char* token2 = strtok(NULL, " ");
+            noeud *noeudBouger = trouverNoeud(token);
+            noeud *nouveauPere = trouverNoeud(token2);
+            bougerNoeud(noeudBouger, nouveauPere);
+        } else if (strcmp(token, "rm") == 0) {
+            token = strtok(NULL, " ");
+            noeud *noeudSupprimer = trouverNoeud(token);
+            supprimer(noeudSupprimer);
+        } else if (strcmp(token, "ls") == 0) {
+            ImprimerDossier(noeudCourant);
+        } else if (strcmp(token, "pwd") == 0) {
+            ImprimerPWD();
+            printf("\n");
+        } else if (strcmp(token, "print") == 0) {
+            ImprimerArbre();
+        }
+    }
+
     fclose(file);
 }
 

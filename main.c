@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     }
     noeud * root;
     root = initArbre();
-    TraiterFichier(root, argv[1]);
+    lireFichier(root, argv[1]);
     supprimer(root);
     return EXIT_SUCCESS;
 }
