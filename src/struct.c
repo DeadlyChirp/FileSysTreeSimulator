@@ -423,7 +423,7 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
                 if (strcmp(arg1, "mkdir") != 0 && strcmp(arg1, "cd") != 0 && strcmp(arg1, "touch") != 0 &&
                     strcmp(arg1, "cp") != 0 && strcmp(arg1, "mv") != 0 && strcmp(arg1, "rm") != 0 &&
                     strcmp(arg1, "ls") != 0 && strcmp(arg1, "pwd") != 0 && strcmp(arg1, "print") != 0) {
-                    ChangerDossier(arg1); //TODO A REVOIR
+                    ChangerDossier(trouverNoeud(arg1)); //TODO A REVOIR
                 } else {
                     // si il n'y a pas d'argument, on revient au dossier racine
                     while (noeudCourant->pere) {
@@ -438,7 +438,7 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             ajouterFils(false, arg1); //TODO A REVOIR
         } else if (strcmp(instruction, "cp") == 0) {
             fscanf(file, "%s %s", arg1, arg2);
-            copierNoeud(arg1, arg2); //TODO A REVOIR
+            copierNoeud(trouverNoeud(arg1), trouverNoeud(arg2)); //TODO A REVOIR
         } else if (strcmp(instruction, "mv") == 0) {
             fscanf(file, "%s %s", arg1, arg2);
             noeud *NoeudArg1 = arg1[0] == '/' ? racine : noeudCourant; // si le chemin commence par /, on commence à la racine, sinon on commence au noeud actuel
