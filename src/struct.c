@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
+
 
 noeud *noeudCourant;
 // // Function declarations
@@ -218,7 +218,6 @@ noeud *trouverNoeud(const char *path){
 void ChangerDossier(noeud *n){
     if(n == NULL) return;
     noeudCourant = n;
-    printf("Le noeud courant est maintenant %s\n", noeudCourant->nom);
 }
 
 bool bougerNoeud(noeud *n, noeud *nouveauPere){
@@ -322,7 +321,7 @@ bool supprimer(noeud *n){
 }
 
 void ImprimerDossierCourantHelper(noeud * node) {
-    if (node->pere != NULL) {
+    if (node->pere != NULL&& node->pere != node) {
         ImprimerDossierCourantHelper(node->pere);
     }
     printf("/%s", node->nom);
@@ -335,7 +334,7 @@ void ImprimerPWD() { // Equivalent à pwd
     } else {
         ImprimerDossierCourantHelper(noeudCourant);
     }
-    printf("\n----------------- pwd -----------------\n");
+    printf("\n--------------------------------------\n");
 }
 
 void ImprimerDossier(noeud * dossier) { // Equivalent à ls qui imprime egalement le dossier courant . ou dossier parent ..
@@ -357,69 +356,69 @@ int LongueurListe(liste_noeud * liste) {
     return length;
 }
 //PROF PRINT
-//void ImprimerArbreAide(noeud* noeud, int profondeur) {
-//    for (int i = 0; i < profondeur; i++) {
-//        printf("=");
-//    }
-//
-//    printf("niveau %d ", profondeur);
-//    if (noeud->est_dossier) {
-//        printf("dossier ");
-//    } else {
-//        printf("fichier ");
-//    }
-//    printf("%s : %d fils -> pere ", noeud->nom, LongueurListe(noeud->fils));
-//    if (noeud->pere) {
-//        printf("%s", noeud->pere->nom);
-//    } else {
-//        printf("NULL");
-//    }
-//    printf("\n");
-//
-//    if (noeud->est_dossier) {
-//        liste_noeud *currentChild = noeud->fils;
-//        while (currentChild) {
-//            ImprimerArbreAide(currentChild->no, profondeur + 1);
-//            currentChild = currentChild->succ;
-//        }
-//    }
-//}
-//
-//
-//
-//void ImprimerArbre() {
-//    ImprimerArbreAide(noeudCourant, 0);
-//}
-
-
-void ImprimerArbreAide(noeud * noeud, int profondeur) {
+void ImprimerArbreAide(noeud* noeud, int profondeur) {
     for (int i = 0; i < profondeur; i++) {
-        printf("| ");
+        printf("=");
     }
 
-    if (noeud->nom[0] == '\0'){
-        printf("\033[32mRoot\033[0m\n");
+    printf("niveau %d ", profondeur);
+    if (noeud->est_dossier) {
+        printf("dossier ");
     } else {
-        if(noeud->est_dossier){
-            printf("\033[32m%s\033[0m\n", noeud->nom);
-        } else {
-            printf("%s\n", noeud->nom);
-        }
+        printf("fichier ");
     }
+    printf("%s : %d fils -> pere ", noeud->nom, LongueurListe(noeud->fils));
+    if (noeud->pere) {
+        printf("%s", noeud->pere->nom);
+    } else {
+        printf("NULL");
+    }
+    printf("\n");
 
-    if (noeud->est_dossier && noeud->fils != NULL) {
-        liste_noeud * list = noeud->fils;
-        while (list != NULL) {
-            ImprimerArbreAide(list->no, profondeur + 1);
-            list = list->succ;
+    if (noeud->est_dossier) {
+        liste_noeud *currentChild = noeud->fils;
+        while (currentChild) {
+            ImprimerArbreAide(currentChild->no, profondeur + 1);
+            currentChild = currentChild->succ;
         }
     }
 }
+
 
 
 void ImprimerArbre() {
     ImprimerArbreAide(noeudCourant, 0);
 }
+
+
+//void ImprimerArbreAide(noeud * noeud, int profondeur) {
+//    for (int i = 0; i < profondeur; i++) {
+//        printf("| ");
+//    }
+//
+//    if (noeud->nom[0] == '\0'){
+//        printf("\033[32mRoot\033[0m\n");
+//    } else {
+//        if(noeud->est_dossier){
+//            printf("\033[32m%s\033[0m\n", noeud->nom);
+//        } else {
+//            printf("%s\n", noeud->nom);
+//        }
+//    }
+//
+//    if (noeud->est_dossier && noeud->fils != NULL) {
+//        liste_noeud * list = noeud->fils;
+//        while (list != NULL) {
+//            ImprimerArbreAide(list->no, profondeur + 1);
+//            list = list->succ;
+//        }
+//    }
+//}
+//
+//
+//void ImprimerArbre() {
+//    ImprimerArbreAide(noeudCourant, 0);
+//}
 
 
 
