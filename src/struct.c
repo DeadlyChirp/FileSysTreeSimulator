@@ -346,12 +346,25 @@ int LongueurListe(liste_noeud * liste) {
     }
     return length;
 }
-
-//void ImprimerArbreAide(noeud *noeud, int profondeur) {
+//PROF PRINT
+//void ImprimerArbreAide(noeud* noeud, int profondeur) {
 //    for (int i = 0; i < profondeur; i++) {
 //        printf("=");
 //    }
-//    printf("Niveau %d %s %s (%s), pere: %s, %d fils\n", profondeur, noeud->est_dossier ? "Dossier" : "Fichier", noeud->nom, noeud->est_dossier ? "Dossier" : "Fichier", noeud->pere ? noeud->pere->nom : "", LongueurListe(noeud->fils));
+//
+//    printf("niveau %d ", profondeur);
+//    if (noeud->est_dossier) {
+//        printf("dossier ");
+//    } else {
+//        printf("fichier ");
+//    }
+//    printf("%s : %d fils -> pere ", noeud->nom, LongueurListe(noeud->fils));
+//    if (noeud->pere) {
+//        printf("%s", noeud->pere->nom);
+//    } else {
+//        printf("NULL");
+//    }
+//    printf("\n");
 //
 //    if (noeud->est_dossier) {
 //        liste_noeud *currentChild = noeud->fils;
@@ -364,43 +377,40 @@ int LongueurListe(liste_noeud * liste) {
 //
 //
 //
-//
 //void ImprimerArbre() {
-//    printf("----------------- print -----------------\n");
-//    ImprimerArbreAide(noeudActuel, 0);
-//    printf("-----------------------------------------\n");
+//    ImprimerArbreAide(noeudCourant, 0);
 //}
-void ImprimerArbreAide(noeud* noeud, int profondeur) {
+
+
+void ImprimerArbreAide(noeud * noeud, int profondeur) {
     for (int i = 0; i < profondeur; i++) {
-        printf("=");
+        printf("| ");
     }
 
-    printf("niveau %d ", profondeur);
-    if (noeud->est_dossier) {
-        printf("dossier ");
+    if (noeud->nom[0] == '\0'){
+        printf("\033[32mRoot\033[0m\n");
     } else {
-        printf("fichier ");
+        if(noeud->est_dossier){
+            printf("\033[32m%s\033[0m\n", noeud->nom);
+        } else {
+            printf("%s\n", noeud->nom);
+        }
     }
-    printf("%s : %d fils -> pere ", noeud->nom, LongueurListe(noeud->fils));
-    if (noeud->pere) {
-        printf("%s", noeud->pere->nom);
-    } else {
-        printf("NULL");
-    }
-    printf("\n");
 
-    if (noeud->est_dossier) {
-        liste_noeud *currentChild = noeud->fils;
-        while (currentChild) {
-            ImprimerArbreAide(currentChild->no, profondeur + 1);
-            currentChild = currentChild->succ;
+    if (noeud->est_dossier && noeud->fils != NULL) {
+        liste_noeud * list = noeud->fils;
+        while (list != NULL) {
+            ImprimerArbreAide(list->no, profondeur + 1);
+            list = list->succ;
         }
     }
 }
 
+
 void ImprimerArbre() {
     ImprimerArbreAide(noeudCourant, 0);
 }
+
 
 
 void TraiterFichier(noeud * racine, char* nomFichier) {
@@ -416,45 +426,34 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
     while (fscanf(file, "%s", instruction) != EOF) {
         if (strcmp(instruction, "mkdir") == 0) {
             fscanf(file, "%s", arg1);
-            AjouterNoeud(true, arg1);
+            creerNoeud(arg1,noeudCourant,true);
         } else if (strcmp(instruction, "cd") == 0) {
             if (fscanf(file, "%s", arg1) != EOF) {
                 // If the next string is not another command
-                if (strcmp(arg1, "mkdir") != 0 && strcmp(arg1, "cd") != 0 && strcmp(arg1, "touch") != 0 &&
-                    strcmp(arg1, "cp") != 0 && strcmp(arg1, "mv") != 0 && strcmp(arg1, "rm") != 0 &&
-                    strcmp(arg1, "ls") != 0 && strcmp(arg1, "pwd") != 0 && strcmp(arg1, "print") != 0) {
-                    ChangerDossier(trouverNoeud(arg1)); //TODO A REVOIR
-                } else {
-                    // si il n'y a pas d'argument, on revient au dossier racine
-                    while (noeudCourant->pere) {
-                        noeudCourant = noeudCourant->pere;
-                    }
-                    // On doit revenir en arrière dans le fichier pour pouvoir traiter la prochaine commande
-                    fseek(file, -strlen(arg1), SEEK_CUR);
+                if (strcmp(arg1, "mkdir") != 0 && strcmp(arg1, "cd") != 0) {
+                    noeud *dossier = trouverNoeud(arg1);
+                    ChangerDossier(dossier);
                 }
             }
         } else if (strcmp(instruction, "touch") == 0) {
             fscanf(file, "%s", arg1);
-            ajouterFils(false, arg1); //TODO A REVOIR
+            creerNoeud(arg1, noeudCourant, false);
         } else if (strcmp(instruction, "cp") == 0) {
-            fscanf(file, "%s %s", arg1, arg2);
-            copierNoeud(trouverNoeud(arg1), trouverNoeud(arg2)); //TODO A REVOIR
+            fscanf(file, "%s", arg1);
+            fscanf(file, "%s", arg2);
+            noeud *noeudCopier = trouverNoeud(arg1);
+            noeud *nouveau = trouverNoeud(arg2);
+            copierNoeud(noeudCopier, nouveau);
         } else if (strcmp(instruction, "mv") == 0) {
-            fscanf(file, "%s %s", arg1, arg2);
-            noeud *NoeudArg1 = arg1[0] == '/' ? racine : noeudCourant; // si le chemin commence par /, on commence à la racine, sinon on commence au noeud actuel
-            noeud *NoeudArg2 = arg2[0] == '/' ? racine : noeudCourant;
-            noeud *node1 = trouverNoeud( arg1[0] == '/' ? arg1 + 1 : arg1); // si le chemin commence par /, on ignore le premier caractère, sinon on garde tout le chemin
-            noeud *node2 = trouverNoeud( arg2[0] == '/' ? arg2 + 1 : arg2);
-            if (node1 && node2) { // si les deux noeuds existent, on peut les bouger
-                bougerNoeud(node1, node2);
-            }
+            fscanf(file, "%s", arg1);
+            fscanf(file, "%s", arg2);
+            noeud *noeudBouger = trouverNoeud(arg1);
+            noeud *nouveauPere = trouverNoeud(arg2);
+            bougerNoeud(noeudBouger, nouveauPere);
         } else if (strcmp(instruction, "rm") == 0) {
             fscanf(file, "%s", arg1);
-            noeud * startNode = arg1[0] == '/' ? racine : noeudCourant;
-            noeud * node = trouverNoeud( arg1[0] == '/' ? arg1 + 1 : arg1);
-            if (node) {
-                supprimer(node);
-            }
+            noeud *noeudSupprimer = trouverNoeud(arg1);
+            supprimer(noeudSupprimer);
         } else if (strcmp(instruction, "ls") == 0) {
             ImprimerDossier(noeudCourant);
         } else if (strcmp(instruction, "pwd") == 0) {
