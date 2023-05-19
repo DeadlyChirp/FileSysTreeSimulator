@@ -40,7 +40,8 @@ void ImprimerPWD();
 void ImprimerDossierCourantHelper(noeud * node);
 void ImprimerDossier(noeud * dossier);
 int LongueurListe(liste_noeud * liste);
-void ImprimerArbre(noeud * noeud, int profondeur);
+void ImprimerArbreAide(noeud * noeud, int profondeur);
+void ImprimerArbre();
 void TraiterFichier(noeud * racine, char* nomFichier); //processfile
 
 //trouver racine à voir

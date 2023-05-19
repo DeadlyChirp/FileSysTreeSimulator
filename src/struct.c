@@ -321,19 +321,23 @@ bool supprimer(noeud *n){
 }
 
 void ImprimerDossierCourantHelper(noeud * node) {
-    if (node->pere != NULL&& node->pere != node) {
+    if (node->pere != NULL && node->pere != node) {
         ImprimerDossierCourantHelper(node->pere);
+        printf("/%s", node->nom);  // Only print '/' before non-root nodes
     }
-    printf("%s/", node->nom);
+    else if (node->nom[0] != '\0') { // If the node name is not empty, print it
+        printf("%s", node->nom);
+    }
 }
+
 
 void ImprimerPWD() { // Equivalent à pwd
     printf("----------------- pwd -----------------\n");
-//    if (noeudCourant->nom[0] == '\0') {
-//        printf("/");
-//    } else {
+    if (noeudCourant->nom[0] == '\0') {
+        printf("/");
+    } else {
         ImprimerDossierCourantHelper(noeudCourant);
-//    }
+    }
     printf("\n--------------------------------------\n");
 }
 
@@ -356,7 +360,7 @@ int LongueurListe(liste_noeud * liste) {
     return length;
 }
 //PROF PRINT
-void ImprimerArbre(noeud* noeud, int profondeur) {
+void ImprimerArbreAide(noeud* noeud, int profondeur) {
     for (int i = 0; i < profondeur; i++) {
         printf("=");
     }
@@ -378,11 +382,17 @@ void ImprimerArbre(noeud* noeud, int profondeur) {
     if (noeud->est_dossier && noeud->fils != NULL) {
         liste_noeud* liste = noeud->fils;
         while (liste != NULL) {
-            ImprimerArbre(liste->no, profondeur + 1);
+            ImprimerArbreAide(liste->no, profondeur + 1);
             liste = liste->succ;
         }
     }
 }
+void ImprimerArbre(){
+    printf("\n---------------- print ---------------\n");
+    ImprimerArbreAide(trouverRacine(noeudCourant),0);
+    printf("\n--------------------------------------\n");
+}
+
 
 
 
@@ -461,7 +471,7 @@ void TraiterFichier(noeud * racine, char* nomFichier) {
             ImprimerPWD();
             printf("\n");
         } else if (strcmp(instruction, "print") == 0) {
-            ImprimerArbre(trouverRacine(noeudCourant),0);
+            ImprimerArbre();
         }
     }
     fclose(file);
