@@ -142,6 +142,7 @@ noeud *trouverNoeud(const char *path){
 
     if(path[0] == '\0'){
         n = trouverRacine(n);
+        free(pathFolders);
         return n;
     }
 
@@ -172,8 +173,10 @@ noeud *trouverNoeud(const char *path){
                     found = true;
                 }
 
-                if (found)
+                if (found){
+                    free(pathFolders);
                     break;
+                }
                 else
                     liste = liste->succ;
             }
