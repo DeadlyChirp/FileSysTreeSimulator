@@ -32,10 +32,6 @@ Make
 ./prog testfiles/fichier_entree.txt
 ```
 
-## Norme de codage
-
-Le code source devra être écrit en respectant les normes de [webkit](https://www.webkit.org/code-style-guidelines/).  Pour un formatage rapide du code, il est possible de mettre en place directement dans son éditeur de code un plugin qui permet de formater le code en respectant les normes de webkit. Par exemple dans Visual Studio Code, il est possible d'installer le plugin [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) qui permet de formater le code en respectant les normes de webkit. Pour cela il suffira de se rendre dans les paramètres et de chercher "C_Cpp.clang_format_fallbackStyle" et de mettre "WebKit" comme valeur.
-
 ## Structure de Données
 La structure de données manipulée par le programme sera imposée.
 
@@ -43,7 +39,7 @@ La structure de données manipulée par le programme sera imposée.
 Des fichiers d’entrée test vous seront fournis pour évaluer le bon fonctionnement du programme.
 
 ## Auteur
-- CHRISTOPHE AUREGLIA
-- TANG THANH LONG
+- CHRISTOPHE AUREGLIA 22111766
+- TANG THANH LONG 22110569
 
 
