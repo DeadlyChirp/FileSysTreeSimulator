@@ -29,7 +29,7 @@ Make
 ```
 ## Execution
 ```bash 
-./prog fichier_entree.txt
+./prog testfiles/fichier_entree.txt
 ```
 
 ## Norme de codage
