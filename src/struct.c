@@ -274,8 +274,6 @@ void copierEtCreer(noeud *n, const char *path){
     // Attempt to find the node at the specified path
     noeud *nouveau = trouverNoeud(path);
 
-    // Check if the destination is a directory or a file
-    bool isDirectory = (path[strlen(path) - 1] == '/');
 
     // If the node does not exist, create it
     if (nouveau == NULL) {
@@ -297,7 +295,7 @@ void copierEtCreer(noeud *n, const char *path){
             *lastSlash = '/';  // Restores the original string
 
             // Create the new node under the parent
-            nouveau = creerNoeud(lastSlash + 1, parent, isDirectory ? n->est_dossier : true);
+            nouveau = creerNoeud(lastSlash + 1, parent, true);
         }
     }
     // If both nodes are directories, copy the contents of the source to the destination
