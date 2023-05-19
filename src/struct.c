@@ -282,6 +282,8 @@ void copierNoeud(noeud *n, noeud *nouveau){
 }
 
 
+//faire fonction Estdescendant
+
 void copierEtCreer(noeud *n, const char *path){
     // If the source node does not exist, return immediately
     if (n == NULL) {
@@ -289,24 +291,25 @@ void copierEtCreer(noeud *n, const char *path){
         return;
     }
 
+    char * copiepath = malloc(sizeof (char )* strlen(path)+sizeof (char)) ;
+    strcpy(copiepath , path) ;
+
     // Attempt to find the node at the specified path
     noeud *nouveau = trouverNoeud(path);
 
     // If the node does not exist, create it
     if (nouveau == NULL) {
         // Get parent directory
-        char* lastSlash = strrchr(path, '/');
-        noeud *parent;
+        char* lastSlash = strrchr(copiepath, '/');
+        noeud *parent = NULL;
 
         if (lastSlash != NULL) {
             *lastSlash = '\0';  // Temporarily ends the string at the last slash
 
-            if (path[0] == '/') {
-                parent = trouverRacine(noeudCourant);  // Use root as the parent
-            } else if (path[0] == '\0') {
-                parent = noeudCourant;  // If path is empty, use the current node as the parent
+            if (path[0] != '\0') {
+                parent = trouverNoeud(copiepath);  // Use root as the parent
             } else {
-                parent = trouverNoeud(path);  // Find the parent using the path
+                parent = n->racine;  // If path is empty, use the current node as the parent
             }
 
             *lastSlash = '/';  // Restores the original string
@@ -317,13 +320,31 @@ void copierEtCreer(noeud *n, const char *path){
 
         if (parent == NULL) {
             printf("Parent directory does not exist.\n");
+            free(copiepath) ;
+            return;
+        }
+            //check si le noeud est descendant
+        if (!parent->est_dossier) {
+            //
+            free(copiepath) ;
             return;
         }
 
         // Create the new node under the parent
-        const char* nodeName = lastSlash ? lastSlash + 1 : path;
+        const char* nodeName = NULL ;
+        if (lastSlash == NULL) {
+            nodeName = path ;
+        } else{
+            nodeName = lastSlash+1;
+        }
         nouveau = creerNoeud(nodeName, parent, true);
+    }else{
+        //
+        free(copiepath) ;
+        return;
     }
+
+    // verifier que la source n'est pas un ancetre de parent copie (estParent)
 
     // If both nodes are directories, copy the contents of the source to the destination
     if (n->est_dossier && nouveau->est_dossier) {
@@ -338,6 +359,7 @@ void copierEtCreer(noeud *n, const char *path){
         // Simply renaming the destination node would be equivalent to overwriting the file
         strcpy(nouveau->nom, n->nom);
     }
+    free(copiepath) ;
 }
 
 
