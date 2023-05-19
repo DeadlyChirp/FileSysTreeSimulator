@@ -173,10 +173,8 @@ noeud *trouverNoeud(const char *path){
                     found = true;
                 }
 
-                if (found){
-                    free(pathFolders);
+                if (found)
                     break;
-                }
                 else
                     liste = liste->succ;
             }
