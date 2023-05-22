@@ -1,0 +1,18 @@
+mkdir Rep1
+cd Rep1
+mkdir Rep11
+touch fileR11
+mkdir Rep2
+cd Rep2
+touch fileR21
+cd ../..
+ls
+cp Rep1 Rep3
+cd Rep3
+cd ..
+rm Rep1
+mkdir Rep31
+ls
+cd ..
+print
+ls

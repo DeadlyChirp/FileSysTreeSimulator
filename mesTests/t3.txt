@@ -1,0 +1,25 @@
+mkdir MyDirA
+touch fileA1
+touch fileA2
+cd ..
+mkdir MyDirB
+cd MyDirB
+mkdir MyDirB1
+cd MyDirB1
+touch fileB11
+touch fileB12
+cd ..
+cd ..
+cp MyDirA MyDirB
+cd MyDirB
+cd ..
+rm fileA1
+mkdir MyDirB2
+ls
+cd ..
+cd MyDirA
+print
+ls
+cd ..
+rm MyDirB
+print

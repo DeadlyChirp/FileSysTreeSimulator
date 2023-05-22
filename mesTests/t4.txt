@@ -1,0 +1,31 @@
+mkdir TestDir
+cd TestDir
+touch file1
+mkdir SubDir1
+cd SubDir1
+touch file11
+touch file12
+cd ..
+mkdir SubDir2
+cd SubDir2
+touch file21
+touch file22
+mkdir SubSubDir
+cd SubSubDir
+touch file221
+touch file222
+cd ../../../
+ls
+cp TestDir NewDir
+cd NewDir
+ls
+rm file1
+rm SubDir1/file11
+mv SubDir2 NewSubDir
+cd NewSubDir
+ls
+cd ../..
+rm TestDir
+rm NewDir
+ls
+print
